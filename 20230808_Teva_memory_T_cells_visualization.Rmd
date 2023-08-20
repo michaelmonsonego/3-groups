@@ -25,10 +25,10 @@ library(gridExtra)
 library(future)
 library(reshape2)
 
-setwd("//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Figures/T cells")
+setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Figures/T cells")
 
 
-T_cells = readRDS(file="//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/T cells/Teva_T_intermediate_object.rds")
+T_cells = readRDS(file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/Teva_T_intermediate_object.rds")
  
 T_cells  = RunTSNE(T_cells , dims = 1:10, verbose = F)
 DimPlot(T_cells , reduction = "tsne", label= TRUE, pt.size=0.5)
@@ -270,7 +270,7 @@ ggsave(file = "T cells - annotated tsne - with names.png", dpi=300, width=25, he
 DimPlot(T_cells, reduction = "tsne", label=FALSE, pt.size=2)+
   theme(legend.text= element_text(size=24))
 ggsave(file = "T cells - annotated tsne.png", dpi=300, width=25, height=20)
-saveRDS(T_cells, file = "//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/T cells/T cells_object.rds")
+saveRDS(T_cells, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/T cells_object.rds")
 
 ```
 

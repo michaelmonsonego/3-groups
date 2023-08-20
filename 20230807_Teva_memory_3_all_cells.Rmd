@@ -37,7 +37,7 @@ library(gridExtra)
 library(future)
 library(RColorBrewer)
 
-setwd("//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/scRNA seq/")
+setwd("D:/git_check/3-groups")
 
 # Load the datasets
 A_data = Read10X(data.dir = "A1_exp47/filtered_feature_bc_matrix")
@@ -69,7 +69,6 @@ dim(merged_0)
 
 ## 2. QC and selecting cells for further analysis
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=12, fig.height= 6}
-setwd("//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Figures/All cells/")
 
 merged_0[["percent.mt"]] = PercentageFeatureSet(merged_0, pattern= "^mt-")
 merged_0[["percent.ribo"]] = PercentageFeatureSet(merged_0, pattern= "^Rp[sl]")
@@ -80,7 +79,7 @@ VlnPlot(merged_0,
         group.by="Treatment", 
         cols=c("#CFBAE1", "#5C7D9D","#A4DEF9"), 
         pt.size = 0.000001)
-ggsave(filename = "QC.png", dpi=300, height=10, width=15, device = 'png')
+ggsave(filename = "plots/QC.png", dpi=300, height=10, width=15, device = 'png')
 
 VlnPlot(merged_0, 
         features="percent.mt", 
@@ -104,7 +103,7 @@ plot2 = FeatureScatter(merged_0,
       labs(color = "Treatment")+
       theme(axis.text.x=element_text(angle=45, hjust=1))
 plot1 + plot2
-ggsave(filename = 'Scatter Feature.png', dpi=300, height=10, width=15, device = 'png')
+ggsave(filename = 'plots/Scatter Feature.png', dpi=300, height=10, width=15, device = 'png')
 
 merged = subset(merged_0, subset = nFeature_RNA > 500 & nFeature_RNA < 4000 & nCount_RNA<20000 & percent.mt < 10 & percent.ribo< 50)
 dim(merged)
@@ -139,7 +138,7 @@ DimPlot(merged, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5
 ElbowPlot(merged, ndims = 40) + theme_classic()
 ggsave(filename = 'Elbow Plot.png', dpi=300, height=15, width=15, device = 'png')
 
-saveRDS(merged, file="//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/All cells/Teva_3_merged_before_dim_object.rds")
+saveRDS(merged, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/All cells/Teva_3_merged_before_dim_object.rds")
 ```
 Calibration of dimensions and resolution (in another file):
  --> 10 dimensions, resolution 0.4
@@ -178,7 +177,7 @@ Top100Markers =
   as.data.frame %>% 
   arrange(cluster,-avg_log2FC)
 
-write_csv(Top100Markers, "//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Excels/memory_DE genes.csv")
+write_csv(Top100Markers, "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Excels/memory_DE genes.csv")
 
 merged.markers %>%
     group_by(cluster) %>%
@@ -234,7 +233,7 @@ ggsave(file = "annotated tsne - with label.png", dpi=300, width=12, height=12)
 
 DimPlot(merged, reduction = "tsne", label=FALSE, pt.size=0.5, label.size=5)+ theme(legend.text= element_text(size=18))
 ggsave(file = "annotated tsne.png", dpi=300, width=12, height=12)
-saveRDS(merged, file = "//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/Teva_merged_object.rds")
+saveRDS(merged, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_merged_object.rds")
 ```
 
 

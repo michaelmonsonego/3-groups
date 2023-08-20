@@ -1,0 +1,251 @@
+---
+title: 'Teva memory - 3 groups'
+author: "Sarah"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document: 
+    fig_crop: no
+    toc: yes
+    toc_float: yes
+    fig_width: 16
+    fig_height: 16
+  pdf_document:
+    toc: yes
+editor_options:
+  
+  chunk_output_type: console
+---
+
+MC38-bearing mice were treated by attenukine or control.
+Intra-tumoral DAPI- CD45+ CD3+ single cells were sorted and sequenced.
+
+3 groups of treatment:  
+A= αPD1-Il2  
+B= αKLH-Il2  
+D= Saline  
+
+
+
+## 1. Load the datasets
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(tidyverse)
+library(sleepwalk)
+library(gridExtra)
+library(future)
+library(RColorBrewer)
+
+setwd("//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/scRNA seq/")
+
+# Load the datasets
+A_data = Read10X(data.dir = "A1_exp47/filtered_feature_bc_matrix")
+A = CreateSeuratObject(counts = A_data, project = "A")
+A$Sample = "A"
+A$Treatment = "αPD1-Il2"
+
+
+B_data = Read10X(data.dir = "B1_exp47/filtered_feature_bc_matrix")
+B = CreateSeuratObject(counts = B_data, project = "B")
+B$Sample = "B"
+B$Treatment = "αKLH-Il2"
+
+#C_data = Read10X(data.dir = "C1_exp47/filtered_feature_bc_matrix")
+#C = CreateSeuratObject(counts = C_data, project = "C")
+#C$Sample = "C"
+#C$Treatment = "αPD1"
+
+D_data = Read10X(data.dir = "D1_exp47/filtered_feature_bc_matrix")
+D = CreateSeuratObject(counts = D_data, project = "D")
+D$Sample = "D"
+D$Treatment = "Saline"
+
+merged_0 = merge(A, c(B, D), add.cell.ids = c("A", "B", "D"))
+merged_0$Sample = factor(merged_0$Sample, levels = c("A", "B", "D"))
+merged_0$Treatment = factor(merged_0$Treatment, levels=c("αPD1-Il2", "αKLH-Il2", "Saline"))
+dim(merged_0)
+```
+
+## 2. QC and selecting cells for further analysis
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=12, fig.height= 6}
+setwd("//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Figures/All cells/")
+
+merged_0[["percent.mt"]] = PercentageFeatureSet(merged_0, pattern= "^mt-")
+merged_0[["percent.ribo"]] = PercentageFeatureSet(merged_0, pattern= "^Rp[sl]")
+
+VlnPlot(merged_0, 
+        features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.ribo"), 
+        ncol = 4, 
+        group.by="Treatment", 
+        cols=c("#CFBAE1", "#5C7D9D","#A4DEF9"), 
+        pt.size = 0.000001)
+ggsave(filename = "QC.png", dpi=300, height=10, width=15, device = 'png')
+
+VlnPlot(merged_0, 
+        features="percent.mt", 
+        y.max=10, 
+        group.by="Treatment",
+        cols=c("#CFBAE1", "#5C7D9D","#A4DEF9"), 
+        pt.size = 0.000001)
+
+plot1 = FeatureScatter(merged_0, 
+                       feature1 = "nCount_RNA", 
+                       feature2 = "percent.mt", 
+                       group.by = "Treatment", 
+                       cols = c("#CFBAE1", "#5C7D9D","#A4DEF9")) +
+      labs(color = "Treatment")+
+      theme(axis.text.x=element_text(angle=45, hjust=1))
+plot2 = FeatureScatter(merged_0,
+                       feature1 = "nCount_RNA",
+                       feature2 = "nFeature_RNA",
+                       group.by = "Treatment", 
+                       cols = c("#CFBAE1", "#5C7D9D","#A4DEF9")) +
+      labs(color = "Treatment")+
+      theme(axis.text.x=element_text(angle=45, hjust=1))
+plot1 + plot2
+ggsave(filename = 'Scatter Feature.png', dpi=300, height=10, width=15, device = 'png')
+
+merged = subset(merged_0, subset = nFeature_RNA > 500 & nFeature_RNA < 4000 & nCount_RNA<20000 & percent.mt < 10 & percent.ribo< 50)
+dim(merged)
+```
+
+## 3. Normalize the data
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+merged = NormalizeData(merged)
+merged = FindVariableFeatures(merged, selection.method = "vst", nfeatures = 2000)
+
+# Identify the 10 most highly variable genes
+top10 = head(VariableFeatures(merged), 10)
+print(top10)
+```
+
+## 4. Scaling the data
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+all.genes = rownames(merged)
+merged = ScaleData(merged, vars.to.regress = "percent.mt")
+```
+
+## 5. PCA
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height= 10}
+# Perform linear dimensional reduction
+merged = RunPCA(merged, features = VariableFeatures(object = merged))
+
+# Examine and visualize PCA results a few different ways
+print(merged[["pca"]], dims = 1:5, nfeatures = 5)
+DimPlot(merged, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.5)
+
+#Determine the ‘dimensionality’ of the dataset
+ElbowPlot(merged, ndims = 40) + theme_classic()
+ggsave(filename = 'Elbow Plot.png', dpi=300, height=15, width=15, device = 'png')
+
+saveRDS(merged, file="//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/All cells/Teva_3_merged_before_dim_object.rds")
+```
+Calibration of dimensions and resolution (in another file):
+ --> 10 dimensions, resolution 0.4
+
+
+
+## 6. Cluster the cells
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+merged = FindNeighbors(merged, dims = 1:10)
+merged = FindClusters(merged, resolution = 0.4)
+```
+
+## 7. Run non-linear dimensional reduction (UMAP/tSNE)
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height= 10}
+merged = RunUMAP(merged, dims = 1:10)
+#DimPlot(merged, reduction = "umap", label= TRUE, pt.size=0.5)
+#ggsave(file = "UMAP.png", dpi=300, width=12, height=12)
+
+merged = RunTSNE(merged, dims = 1:10, verbose = F)
+DimPlot(merged, reduction = "tsne", label= TRUE, pt.size=0.5)
+ggsave(file = "tSNE.png", dpi=300, width=12, height=12)
+
+TSNEPlot(merged, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.5)
+ggsave(file = "tSNE - by treatment.png", dpi=300, width=12, height=12)
+```
+We used tSNE reduction
+
+## 8. Finding differentially expressed features (cluster biomarkers)
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height= 15}
+merged.markers = FindAllMarkers(merged, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25, return.thresh = 0.05)
+
+Top100Markers =
+  merged.markers %>%
+  group_by(cluster) %>%
+  top_n(n = 100, wt = avg_log2FC) %>%
+  as.data.frame %>% 
+  arrange(cluster,-avg_log2FC)
+
+write_csv(Top100Markers, "//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Excels/memory_DE genes.csv")
+
+merged.markers %>%
+    group_by(cluster) %>%
+    top_n(n = 10, wt = avg_log2FC) -> top10
+DoHeatmap(merged, features = top10$gene, label=FALSE) + scale_fill_gradientn(colors = c("blue", "white", "red"))
+ggsave(file = "DE genes - heatmap - legend.png", dpi=300, width=12, height=22)
+```
+
+## 9. Lineage identification
+
+### a. T cells
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 16}
+FeaturePlot(merged, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label=TRUE)
+ggsave(file = "Features_T.png", dpi=300, width=30, height=20)
+```
+
+### b. B cells
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 16}
+FeaturePlot(merged, features = c("Cd19", "Ms4a1", "Iglc1", "Ighm"), order=TRUE,pt.size=1, reduction="tsne", ncol=2, label=TRUE)
+ggsave(file = "Features_B.png", dpi=300, width=20, height=20)
+```
+
+### c. NK cells
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 16}
+FeaturePlot(merged, features = c("Ncr1", "Fcgr3", "Prf1", "Gzma", "Klra4", "Klra7"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label=TRUE)
+ggsave(file = "Features_NK.png", dpi=300, width=30, height=20)
+```
+
+### d. myeloid cells
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 32}
+FeaturePlot(merged, features = c("Ptprc", "Cd14","Cd4", "Cd8a", "Fcgr3", "Itgam", "Itgax", "Tnfsf4", "Apoe","Cd80","Cd86","H2-Ab1"), order=TRUE, pt.size=1, reduction="tsne", ncol=4, label=TRUE)
+ggsave(file = "Features_myeloid.png", dpi=300, width=40, height=30)
+```
+
+
+## 10. Annotation
+```{r message=FALSE, warning=FALSE, cache= TRUE,  fig.width=25, fig.height= 20}
+merged@active.ident = merged$seurat_clusters
+merged = RenameIdents(merged, 
+                       "0" = "0_CD8+ T cells", 
+                       "1" = "1_CD8+ T cells", 
+                       "2" = "2_NK cells", 
+                       "3" = "3_B cells", 
+                       "4" = "4_Myeloid cells", 
+                       "5" = "5_Myeloid cells",
+                       "6" = "6_Myeloid cells",
+                       "7" = "7_CD8+ T cells + tumor cells",
+                       "8" = "8_CD4+ T cells",
+                       "9" = "9_Myeloid cells",
+                       "10"= "10_B cells")
+DimPlot(merged, reduction = "tsne", label=TRUE, pt.size=0.5, label.size=5)+ theme(legend.text= element_text(size=18))
+ggsave(file = "annotated tsne - with label.png", dpi=300, width=12, height=12)
+
+DimPlot(merged, reduction = "tsne", label=FALSE, pt.size=0.5, label.size=5)+ theme(legend.text= element_text(size=18))
+ggsave(file = "annotated tsne.png", dpi=300, width=12, height=12)
+saveRDS(merged, file = "//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/Teva_merged_object.rds")
+```
+
+
+## 11. Contribution of each group 
+```{r message=FALSE, warning=FALSE, cache= TRUE,  fig.width=15, fig.height= 8}
+ggplot(merged@meta.data, aes(x=merged@active.ident, fill=Treatment)) + geom_bar(position="fill")+
+    scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+
+    theme_classic()+
+    labs(x="")+
+    theme(legend.title=element_text(size=16),legend.text= element_text(size=12), 
+          axis.text.x=element_text(size= 12, angle=45, hjust=1))
+
+ggsave(file = "stacked bar plot.png", dpi=300, width=14, height=8)
+```

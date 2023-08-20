@@ -1,0 +1,181 @@
+---
+title: 'Teva memory - T cells - data preparation'
+author: "Sarah"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document: 
+    fig_crop: no
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+editor_options:
+  
+  chunk_output_type: console
+---
+
+
+## 1. Selection of cells from T cells clusters
+```{r message=FALSE, warning=FALSE, cache=FALSE}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(tidyverse)
+library(sleepwalk)
+library(gridExtra)
+library(future)
+library(reshape2)
+library(knitr)
+knitr::opts_chunk$set(cache = TRUE, warning = FALSE, 
+                      message = FALSE, cache.lazy = FALSE)
+
+merged = readRDS("//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/Teva_merged_object.rds")
+
+T_cells_0= subset(x=merged, idents= c("0" = "0_CD8+ T cells", 
+                                      "1" = "1_CD8+ T cells", 
+                                      "7" = "7_CD8+ T cells + tumor cells",
+                                      "8" = "8_CD4+ T cells"))
+#dim(T_cells_0)
+```
+
+## 2. Normalize and scale the data
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+# Normalize data
+T_cells_0 = NormalizeData(T_cells_0)
+T_cells_0 = FindVariableFeatures(T_cells_0, selection.method = "vst", nfeatures = 2000)
+T_cells_0 = ScaleData(T_cells_0, vars.to.regress="percent.mt")
+
+# Identify the 10 most highly variable genes
+#top10_T_0 = head(VariableFeatures(T_cells_0), 10)
+
+setwd("//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Figures/T cells/")
+```
+
+## 3. PCA
+```{r message=FALSE, warning=FALSE, cache= TRUE,fig.width=6 , fig.height= 4}
+# Perform linear dimensional reduction
+T_cells_0 = RunPCA(T_cells_0, features = VariableFeatures(object = T_cells_0))
+
+# Examine and visualize PCA results
+DimPlot(T_cells_0, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=1.1)
+
+# Determine the ‘dimensionality’ of the dataset
+ElbowPlot(T_cells_0, ndims = 40) + theme_classic()
+ggsave(file = "Elbow plot_0.png", dpi=300, width=6, height=6)
+
+T_0_intermediate = saveRDS(T_cells_0, file="//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/Teva_T_0_intermediate_object.rds")
+```
+
+6, 7, 9, 10, 18
+
+Calibration of dimensions and resolution (in another file):
+ --> 9 dimensions, resolution 0.5
+ 
+ take-off cluster 11 (tumor cells)
+ 
+
+## 4. Cluster the cells
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+T_cells_0 = FindNeighbors(T_cells_0, dims = 1:9)
+T_cells_0 = FindClusters(T_cells_0, resolution = 0.5)
+```
+
+## 5. Run non-linear dimensional reduction (UMAP/tSNE)
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10 , fig.height= 10}
+#T_cells_0 = RunUMAP(T_cells_0, dims = 1:9)
+#DimPlot(T_cells_0, reduction = "umap", label= TRUE, pt.size=0.5)
+#ggsave(file = "UMAP_0.png", dpi=300, width=12, height=12)
+
+T_cells_0 = RunTSNE(T_cells_0, dims = 1:9, verbose = F)
+DimPlot(T_cells_0, reduction = "tsne", label= TRUE, pt.size=0.5)
+ggsave(file = "tSNE_0.png", dpi=300, width=12, height=12)
+
+TSNEPlot(T_cells_0, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.8)
+ggsave(file = "tSNE_0 - by treatment.png", dpi=300, width=12, height=12)
+```
+
+
+## 6. Remove cluster of tumor and non-T cells
+```{r message=FALSE, warning=FALSE, cache=FALSE, fig.width=16 , fig.height= 24}
+# T cells
+FeaturePlot(T_cells_0, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3", "Mki67"), order=TRUE,pt.size=.5, reduction="tsne", ncol=3)
+ggsave(file = "features_T_0.png", dpi=300, width=10, height=6.67)
+
+# Remove clusters 11 (non-T cells)
+T_cells= subset(x=T_cells_0, idents= c(0,1,2,3,4,5,6,7,9,10))
+saveRDS(T_cells, file="//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/Teva_T_intermediate_object.rds")
+```
+
+
+## 7. Normalize and scale the data
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+# Normalize data
+T_cells = NormalizeData(T_cells)
+T_cells = FindVariableFeatures(T_cells, selection.method = "vst", nfeatures = 2000)
+T_cells = ScaleData(T_cells, vars.to.regress="percent.mt")
+
+# Identify the 10 most highly variable genes
+# top10_T = head(VariableFeatures(T_cells), 10)
+```
+
+## 8. PCA
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=6, fig.height= 6}
+# Perform linear dimensional reduction
+T_cells = RunPCA(T_cells, features = VariableFeatures(object = T_cells))
+
+# Examine and visualize PCA results
+DimPlot(T_cells, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5C7D9D","#A4DEF9"),pt.size=1.1)
+
+# Determine the ‘dimensionality’ of the dataset
+ElbowPlot(T_cells, ndims = 40) + theme_classic()
+ggsave(file = "Elbow plot_T.png", dpi=300, width=6, height=6)
+saveRDS(T_cells, file="//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/T cells/Teva_T_3groups_before dim_object.rds")
+```
+
+Calibration of dimensions and resolution (in another file):
+ --> 11 dimensions, resolution 0.3 
+ 
+ 
+## 9. Cluster the cells
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+T_cells  = FindNeighbors(T_cells , dims = 1:11)
+T_cells  = FindClusters(T_cells , resolution = 0.3)
+```
+
+
+## 10. Run non-linear dimensional reduction (UMAP/tSNE)
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height= 10}
+#T_cells  = RunUMAP(T_cells , dims = 1:10)
+#DimPlot(T_cells , reduction = "umap", label= TRUE, pt.size=0.5)
+#ggsave(file = "UMAP_T.png", dpi=300, width=12, height=12)
+
+T_cells  = RunTSNE(T_cells , dims = 1:11, verbose = F)
+DimPlot(T_cells , reduction = "tsne", label= TRUE, pt.size=0.5)
+ggsave(file = "tSNE_T.png", dpi=300, width=10, height=10)
+
+TSNEPlot(T_cells, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.5)+
+  theme(legend.text=element_text(size=20))
+ggsave(file = "tSNE - T - by treatment for teva .png", dpi=300, width=10, height=10)
+```
+
+
+## 11. Finding differentially expressed features (cluster biomarkers)
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=12, fig.height= 28}
+T_cells.markers = FindAllMarkers(T_cells, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25, return.thresh = 0.05)
+
+Top100Markers_T =
+  T_cells.markers %>%
+  group_by(cluster) %>%
+  top_n(n = 100, wt = avg_log2FC) %>%
+  as.data.frame %>% 
+  arrange(cluster,-avg_log2FC)
+
+write_csv(Top100Markers_T, "//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Excels/memory_T cells_DE genes.csv")
+
+T_cells.markers %>%
+    group_by(cluster) %>%
+    top_n(n = 10, wt = avg_log2FC) -> top10_T
+DoHeatmap(T_cells, features = top10_T$gene) + NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
+ggsave(file = "T cells markers - heatmap.png", dpi=300, width=12, height=20)
+saveRDS(T_cells, file="//asafmadilabfs.tau.ac.il/asafmadilab$/Sarah/experiment/teva/memory/20221225 - memory - scRNA seq/R/3 groups/Objects/T cells/Teva_T_intermediate_object.rds")
+```

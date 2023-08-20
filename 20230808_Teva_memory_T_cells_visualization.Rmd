@@ -25,7 +25,7 @@ library(gridExtra)
 library(future)
 library(reshape2)
 
-setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Figures/T cells")
+setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups")
 
 
 T_cells = readRDS(file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/Teva_T_intermediate_object.rds")

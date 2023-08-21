@@ -1,0 +1,139 @@
+---
+title: 'Teva memory - myeloid cells - data preparation'
+author: "Michael"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document: 
+    fig_crop: no
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+editor_options:
+  
+  chunk_output_type: console
+---
+
+## 1. Selection of cells from myeloid cells clusters
+```{r message=FALSE, warning=FALSE, cache=FALSE}
+library(dplyr)
+library(Seurat)
+library(patchwork)
+library(tidyverse)
+library(sleepwalk)
+library(gridExtra)
+library(future)
+library(reshape2)
+library(DT)
+x1 <- 5
+
+merged = readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_merged_object.rds")
+setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups")
+
+myeloid= subset(x=merged, idents= c("4" = "4_Myeloid cells", 
+                                   "5" = "5_Myeloid cells",
+                                   "6" = "6_Myeloid cells",
+                                   "9" = "9_Myeloid cells"))
+dim(myeloid)
+
+```
+
+## 2. Normalize and scale the data
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+# Normalize data
+myeloid = NormalizeData(myeloid)
+myeloid = FindVariableFeatures(myeloid, selection.method = "vst", nfeatures = 2000)
+myeloid = ScaleData(myeloid, vars.to.regress="percent.mt")
+
+#Identify the 10 most highly variable genes
+top10_myeloid = head(VariableFeatures(myeloid), 10)
+
+```
+
+## 3. PCA
+```{r message=FALSE, warning=FALSE, cache= TRUE,fig.width=6 , fig.height= 4}
+# Perform linear dimensional reduction
+myeloid = RunPCA(myeloid, features = VariableFeatures(object = myeloid))
+
+# Examine and visualize PCA results
+DimPlot(myeloid, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=1.1)
+
+# Determine the ‘dimensionality’ of the dataset
+ElbowPlot(myeloid, ndims = 40) + theme_classic()
+ggsave(file = "Plots/Myeloid/Elbow_plot_myeloid.png", dpi=300, width=10, height=10)
+# choose 12, resolution 0.5
+
+saveRDS(myeloid, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_myeloid_0_before_dim_object.rds")
+```
+#######################################################################################################################
+## 4. Cluster the cells
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+myeloid = FindNeighbors(myeloid, dims = 1:14)
+myeloid = FindClusters(myeloid, resolution = 0.4)
+myeloid = RunTSNE(myeloid, dims = 1:14, verbose = F)
+DimPlot(myeloid, reduction = "tsne")
+```
+
+## 5. Run non-linear dimensional reduction (UMAP/tSNE)
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=6, fig.height= 6}
+# delete cluster 5 : T cells
+FeaturePlot(myeloid, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=2)
+myeloid <- subset(myeloid, idents= c(0,1,2,3,4,6,7))
+
+# run analysis again
+myeloid = NormalizeData(myeloid)
+myeloid = FindVariableFeatures(myeloid, selection.method = "vst", nfeatures = 2000)
+myeloid = ScaleData(myeloid, vars.to.regress="percent.mt")
+top10_myeloid = head(VariableFeatures(myeloid), 10)
+myeloid = RunPCA(myeloid, features = VariableFeatures(object = myeloid))
+DimPlot(myeloid, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=1.1)
+ElbowPlot(myeloid, ndims = 40) + theme_classic()
+ggsave(file = "Plots/Myeloid/Elbow plot_myeloid_second.png", dpi=300, width=10, height=10)
+saveRDS(myeloid, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/Teva_myeloid_0_before_dim_object_2.rds")
+# dim+res choosing
+myeloid = FindNeighbors(myeloid, dims = 1:12)
+myeloid = FindClusters(myeloid, resolution = 0.25)
+myeloid = RunTSNE(myeloid, dims = 1:12, verbose = F)
+DimPlot(myeloid, reduction = "tsne", label= TRUE, pt.size=0.5)
+ggsave(file = "Plots/Myeloid/myeloid/tSNE.png", dpi=300, width=12, height=12)
+
+TSNEPlot(myeloid, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.8)
+ggsave(file = "Plots/Myeloid/myeloid/tSNE - by treatment.png", dpi=300, width=12, height=12)
+
+table(myeloid$orig.ident)["A"] #  1306 
+table(myeloid$orig.ident)["D"] #  2980 
+```
+
+### make sure no T cells
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 18}
+FeaturePlot(myeloid, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=2)
+ggsave(file = "Plots/Myeloid/myeloid/T_check.png", dpi=300, width=30, height=20)
+```
+
+
+## 6. Finding differentially expressed features (cluster biomarkers)
+```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=12, fig.height= 28}
+myeloid.markers = FindAllMarkers(myeloid, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25, return.thresh = 0.05)
+
+Top50Markers_myeloid =
+  myeloid.markers %>%
+  group_by(cluster) %>%
+  top_n(n = 50, wt = avg_log2FC) %>%
+  as.data.frame %>% 
+  arrange(cluster,-avg_log2FC)
+
+write_csv(Top50Markers_myeloid, "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Excels/memory_myeloid_DE_genes.csv")
+
+Top50Markers_myeloid$avg_log2FC <- Top50Markers_myeloid$avg_log2FC %>% round(2)
+Top50Markers_myeloid <- Top50Markers_myeloid[,c("cluster","gene", "avg_log2FC", "p_val")] 
+datatable(Top50Markers_myeloid, rownames = FALSE, filter = 'top', colnames = c('Cluster #', 'Gene Name', "log2(FC)", 'P.value'))
+
+
+myeloid.markers %>%
+    group_by(cluster) %>%
+    top_n(n = 10, wt = avg_log2FC) -> top10_T
+DoHeatmap(myeloid, features = top10_T$gene) + NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
+ggsave(file = "Plots/Myeloid/myeloid/myeloid cells markers - heatmap.png", dpi=300, width=12, height=20)
+
+saveRDS(myeloid, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/Teva_myeloid_intermediate_object.rds")
+```

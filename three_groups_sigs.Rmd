@@ -33,7 +33,7 @@ Tcells <- readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipel
 
 
 ```{r}
-oxphos_sig <- c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid","Ccnb1","Cdk1","Chchd10","Coa6","Coq7","Coq9","Cox4i2","Cox7a1","Cyc1","Cycs","Dguok","Dld","Dnajc30","Fxn","Gadd45gip1","Iscu","Msh2","mt-Atp6","mt-Atp8","mt-Co1","mt-Co2","mt-Co3","mt-Cytb","mt-Nd1","mt-Nd2","mt-Nd3","mt-Nd4","mt-Nd4l","mt-Nd5","mt-Nd6","Mtch2","Myc","Ndufa1","Ndufa10","Ndufa11","Ndufa12","Ndufa13","Ndufa2","Ndufa3","Ndufa5","Ndufa6","Ndufa7","Ndufa8","Ndufa9", "Ndufab1", "Ndufaf1", "Ndufc1", "Ndufs1", "Ndufs2","Ndufv1", "Nipsnap2", "Nupr1", "Pde12", "Pde2a", "Pink1", "Ppif", "Sdha","Sdhaf2","Shmt2","Slc25a23","Slc25a33","Stoml2","Tefm","Tmem135","Tnf","Uqcc2","Uqcc3","Uqcr10")
+oxphos <- c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid","Ccnb1","Cdk1","Chchd10","Coa6","Coq7","Coq9","Cox4i2","Cox7a1","Cyc1","Cycs","Dguok","Dld","Dnajc30","Fxn","Gadd45gip1","Iscu","Msh2","mt-Atp6","mt-Atp8","mt-Co1","mt-Co2","mt-Co3","mt-Cytb","mt-Nd1","mt-Nd2","mt-Nd3","mt-Nd4","mt-Nd4l","mt-Nd5","mt-Nd6","Mtch2","Myc","Ndufa1","Ndufa10","Ndufa11","Ndufa12","Ndufa13","Ndufa2","Ndufa3","Ndufa5","Ndufa6","Ndufa7","Ndufa8","Ndufa9", "Ndufab1", "Ndufaf1", "Ndufc1", "Ndufs1", "Ndufs2","Ndufv1", "Nipsnap2", "Nupr1", "Pde12", "Pde2a", "Pink1", "Ppif", "Sdha","Sdhaf2","Shmt2","Slc25a23","Slc25a33","Stoml2","Tefm","Tmem135","Tnf","Uqcc2","Uqcc3","Uqcr10")
 
 oxphos_sig <- make_signature(Tcells, oxphos,idents = c("D","A","B"), format_flag = TRUE)
 oxphos_sig_obj <- oxphos_sig[[1]]
@@ -83,7 +83,7 @@ ggsave(file = "Plots/T/glycolysis_sig_per_cluster_treatment.png", dpi=300, width
 
 
 ```{r}
-il2_sig <- c("Shc1","Stat5b","Lck","Stat5a","Jak3","Syk","Csnk2a1","Elk1","Grb2","Hras","Il2","Il2ra","Il2rb","Map2k1","Sos1","Csnk2a2","Fos","Jun","Mapk3","Il2rg","Mapk8","Raf1","Jak1")
+il2 <- c("Shc1","Stat5b","Lck","Stat5a","Jak3","Syk","Csnk2a1","Elk1","Grb2","Hras","Il2","Il2ra","Il2rb","Map2k1","Sos1","Csnk2a2","Fos","Jun","Mapk3","Il2rg","Mapk8","Raf1","Jak1")
 il2_sig <- make_signature(Tcells, il2,idents = c("D","A","B"), format_flag = TRUE)
 il2_sig_obj <- il2_sig[[1]]
 il2_sig[[3]]

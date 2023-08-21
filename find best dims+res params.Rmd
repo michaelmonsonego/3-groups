@@ -1,0 +1,272 @@
+---
+title: "find best dims+res parameters"
+author: "Michael"
+date:  "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document: 
+    fig_crop: no
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+editor_options:
+  
+  chunk_output_type: console
+---
+
+
+## 4. Cluster the cells (with correlation between dims parameter between RUNTSNE and findNeighbors)
+```{r message=FALSE, warning=FALSE, cache= TRUE}
+
+dims_res = readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_myeloid_0_before_dim_object.rds")
+
+setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups")
+
+# dims = 10
+# res = 0.25 : 0.5
+dims_res = FindNeighbors(dims_res, dims = 1:10)
+
+dims_res = FindClusters(dims_res, resolution = 0.25)
+dims_res = RunTSNE(dims_res, dims = 1:10, verbose = F)
+a <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.25')
+
+dims_res = FindClusters(dims_res, resolution = 0.3)
+dims_res = RunTSNE(dims_res, dims = 1:10, verbose = F)
+b <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.3')
+
+dims_res = FindClusters(dims_res, resolution = 0.35)
+dims_res = RunTSNE(dims_res, dims = 1:10, verbose = F)
+c <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.35')
+
+dims_res = FindClusters(dims_res, resolution = 0.4)
+dims_res = RunTSNE(dims_res, dims = 1:10, verbose = F)
+d <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.4')
+
+dims_res = FindClusters(dims_res, resolution = 0.45)
+dims_res = RunTSNE(dims_res, dims = 1:10, verbose = F)
+e <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.45')
+
+dims_res = FindClusters(dims_res, resolution = 0.5)
+dims_res = RunTSNE(dims_res, dims = 1:10, verbose = F)
+f <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.5')
+
+(a|b) / (c|d) / (e|f) + plot_annotation(title = 'dims=10')
+ggsave(file = "Plots/dims_res_test/three_groups_myeloid_res_tests_dim_10.png", dpi=300, width=12, height=12)
+
+
+# dims = 13
+# res = 0.25 : 0.5
+dims_res = FindNeighbors(dims_res, dims = 1:13)
+
+dims_res = FindClusters(dims_res, resolution = 0.25)
+dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
+a <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.25')
+
+dims_res = FindClusters(dims_res, resolution = 0.3)
+dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
+b <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.3')
+
+dims_res = FindClusters(dims_res, resolution = 0.35)
+dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
+c <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.35')
+
+dims_res = FindClusters(dims_res, resolution = 0.4)
+dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
+d <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.4')
+
+dims_res = FindClusters(dims_res, resolution = 0.45)
+dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
+e <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.45')
+
+dims_res = FindClusters(dims_res, resolution = 0.5)
+dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
+f <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.5')
+
+(a|b) / (c|d) / (e|f) + plot_annotation(title = 'dims=13')
+ggsave(file = "Plots/dims_res_test/three_groups_myeloid_res_tests_2_dim_13.png", dpi=300, width=13, height=13)
+
+# dims = 15
+# res = 0.25 : 0.5
+
+dims_res = FindNeighbors(dims_res, dims = 1:15)
+
+dims_res = FindClusters(dims_res, resolution = 0.25)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+a <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.25')
+
+dims_res = FindClusters(dims_res, resolution = 0.3)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+b <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.3')
+
+dims_res = FindClusters(dims_res, resolution = 0.35)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+c <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.35')
+
+dims_res = FindClusters(dims_res, resolution = 0.4)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+d <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.4')
+
+dims_res = FindClusters(dims_res, resolution = 0.45)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+e <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.45')
+
+dims_res = FindClusters(dims_res, resolution = 0.5)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+f <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.5')
+
+(a|b) / (c|d) / (e|f) + plot_annotation(title = 'dims=15')
+ggsave(file = "Plots/dims_res_test/three_groups_myeloid_res_tests_2_dim_15.png", dpi=300, width=12, height=12)
+
+
+```
+
+<!--
+## 4. Cluster the cells (NO correlation between dims parameter)
+```{r eval=FALSE, message=FALSE, warning=FALSE, cache= TRUE}
+
+# dims = 14
+# res = 0.25 : 0.5
+dims_res = FindNeighbors(dims_res, dims = 1:14)
+
+dims_res = FindClusters(dims_res, resolution = 0.25)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+a <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.3)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+b <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.35)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+c <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.4)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+d <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.45)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.5)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+# dims = 12
+# res = 0.25 : 0.5
+dims_res = FindNeighbors(dims_res, dims = 1:12)
+
+dims_res = FindClusters(dims_res, resolution = 0.25)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.3)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.35)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.4)
+dims_res = RunTSNE(dims_res, dims = 1:12, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.45)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.5)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+# dims = 9
+# res = 0.25 : 0.5
+dims_res = FindNeighbors(dims_res, dims = 1:9)
+
+dims_res = FindClusters(dims_res, resolution = 0.25)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.3)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.35)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.4)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.45)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+dims_res = FindClusters(dims_res, resolution = 0.5)
+dims_res = RunTSNE(dims_res, dims = 1:14, verbose = F)
+DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)
+
+```
+
+```{r message=FALSE, warning=FALSE, cache= TRUE,fig.width=6 , fig.height= 4}
+# dims = 15
+# res = 0.25 : 0.5
+
+dims_res = FindNeighbors(dims_res, dims = 1:15)
+
+dims_res = FindClusters(dims_res, resolution = 0.25)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+a <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.25')
+
+dims_res = FindClusters(dims_res, resolution = 0.3)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+b <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.3')
+
+dims_res = FindClusters(dims_res, resolution = 0.35)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+c <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.35')
+
+dims_res = FindClusters(dims_res, resolution = 0.4)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+d <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.4')
+
+dims_res = FindClusters(dims_res, resolution = 0.45)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+e <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.45')
+
+dims_res = FindClusters(dims_res, resolution = 0.5)
+dims_res = RunTSNE(dims_res, dims = 1:15, verbose = F)
+f <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
+  ggtitle('res=0.5')
+
+(a|b) / (c|d) / (e|f) + plot_annotation(title = 'dim=15')
+ggsave(file = "Plots/res_tests_dim_15_15.png", dpi=300, width=12, height=12)
+
+```
+-->
+

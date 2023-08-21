@@ -62,7 +62,7 @@ DimPlot(T_cells_0, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", 
 
 # Determine the ‘dimensionality’ of the dataset
 ElbowPlot(T_cells_0, ndims = 40) + theme_classic()
-ggsave(file = "plots/T/Elbow plot_0.png", dpi=300, width=6, height=6)
+ggsave(file = "Plots/T/Elbow plot_0.png", dpi=300, width=6, height=6)
 
 T_0_intermediate = saveRDS(T_cells_0, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_T_0_intermediate_object.rds")
 ```
@@ -89,10 +89,10 @@ T_cells_0 = FindClusters(T_cells_0, resolution = 0.5)
 
 T_cells_0 = RunTSNE(T_cells_0, dims = 1:9, verbose = F)
 DimPlot(T_cells_0, reduction = "tsne", label= TRUE, pt.size=0.5)
-ggsave(file = "plots/T/tSNE_0.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/T/tSNE_0.png", dpi=300, width=12, height=12)
 
 TSNEPlot(T_cells_0, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.8)
-ggsave(file = "plots/T/tSNE_0 - by treatment.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/T/tSNE_0 - by treatment.png", dpi=300, width=12, height=12)
 ```
 
 
@@ -100,7 +100,7 @@ ggsave(file = "plots/T/tSNE_0 - by treatment.png", dpi=300, width=12, height=12)
 ```{r message=FALSE, warning=FALSE, cache=FALSE, fig.width=16 , fig.height= 24}
 # T cells
 FeaturePlot(T_cells_0, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3", "Mki67"), order=TRUE,pt.size=.5, reduction="tsne", ncol=3)
-ggsave(file = "plots/T/features_T_0.png", dpi=300, width=10, height=6.67)
+ggsave(file = "Plots/T/features_T_0.png", dpi=300, width=10, height=6.67)
 
 # Remove clusters 11 (non-T cells)
 T_cells= subset(x=T_cells_0, idents= c(0,1,2,3,4,5,6,7,9,10))
@@ -129,7 +129,7 @@ DimPlot(T_cells, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#
 
 # Determine the ‘dimensionality’ of the dataset
 ElbowPlot(T_cells, ndims = 40) + theme_classic()
-ggsave(file = "plots/T/Elbow plot_T.png", dpi=300, width=6, height=6)
+ggsave(file = "Plots/T/Elbow plot_T.png", dpi=300, width=6, height=6)
 saveRDS(T_cells, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/Teva_T_3groups_before dim_object.rds")
 ```
 
@@ -152,11 +152,11 @@ T_cells  = FindClusters(T_cells , resolution = 0.3)
 
 T_cells  = RunTSNE(T_cells , dims = 1:11, verbose = F)
 DimPlot(T_cells , reduction = "tsne", label= TRUE, pt.size=0.5)
-ggsave(file = "plots/T/tSNE_T.png", dpi=300, width=10, height=10)
+ggsave(file = "Plots/T/tSNE_T.png", dpi=300, width=10, height=10)
 
 TSNEPlot(T_cells, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.5)+
   theme(legend.text=element_text(size=20))
-ggsave(file = "plots/T/tSNE - T - by treatment for teva .png", dpi=300, width=10, height=10)
+ggsave(file = "Plots/T/tSNE - T - by treatment for teva .png", dpi=300, width=10, height=10)
 ```
 
 
@@ -177,6 +177,6 @@ T_cells.markers %>%
     group_by(cluster) %>%
     top_n(n = 10, wt = avg_log2FC) -> top10_T
 DoHeatmap(T_cells, features = top10_T$gene) + NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T cells markers - heatmap.png", dpi=300, width=12, height=20)
+ggsave(file = "Plots/T/T cells markers - heatmap.png", dpi=300, width=12, height=20)
 saveRDS(T_cells, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/Teva_T_intermediate_object.rds")
 ```

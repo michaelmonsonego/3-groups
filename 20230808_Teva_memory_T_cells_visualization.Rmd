@@ -42,30 +42,30 @@ TSNEPlot(T_cells, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9")
 ### a. T cells populations
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 16}
 FeaturePlot(T_cells, features = c("Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=2,label= TRUE)
-ggsave(file = "plots/T/features_T.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/T/features_T.png", dpi=300, width=12, height=12)
 ```
 
 NKT markers
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 16}
 FeaturePlot(T_cells, features = c("Klrb1", "Itga2", "Cxcr3", "Trdc", "Gzma", "Itgam",  "Gzmb", "Ncr1", "Gzmk"), order=TRUE,pt.size=1, reduction="tsne", ncol=3,label= TRUE)
-ggsave(file = "plots/T/features_NKT.png", dpi=300, width=20, height=20)
+ggsave(file = "Plots/T/features_NKT.png", dpi=300, width=20, height=20)
 ```
 
 ```{r eval=FALSE, fig.height=16, fig.width=16, message=FALSE, warning=FALSE, cache=TRUE}
 FeaturePlot(T_cells, features = c("Itga2", "Trdc", "Gzma", "Itgam",  "Gzmb", "Ncr1"), order=TRUE,pt.size=1, reduction="tsne", ncol=3,label= TRUE)
-ggsave(file = "plots/T/features_NKT for teva.png", dpi=300, width=18, height=12)
+ggsave(file = "Plots/T/features_NKT for teva.png", dpi=300, width=18, height=12)
 ```
 
 γδ markers
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 16}
 FeaturePlot(T_cells, features = c("Cxcr3", "Xcl1", "Ccl5", "Ctla2a", "Fcer1g", "Xcl1", "Ccl5", "Pglyrp1", "Cd160", "Klre1", "Fcer1g", "Klrc1", "Klrc2", "Klrd1", "Adam8", "Ccr6", "Ccr2", "Il1r1", "Il2ra", "Ltb4r1", 'Serpinb1a', 'Il23r', "Nr1d1", "Il17f", "Trdv4"), order=TRUE,pt.size=1, reduction="tsne", ncol=5, label= TRUE)
-ggsave(file = "plots/T/features_gdT.png", dpi=300, width=20, height=20)
+ggsave(file = "Plots/T/features_gdT.png", dpi=300, width=20, height=20)
 
 FeaturePlot(T_cells, features = c("Ccl5", "Xcl1", "Klrd1", "Klrc1", "Klrc2", "Cd2", "Lck", "Itga4"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_gdT T1.png", dpi=300, width=20, height=20)
+ggsave(file = "Plots/T/features_gdT T1.png", dpi=300, width=20, height=20)
             
 FeaturePlot(T_cells, features = c("Cxcr6", "Ccr2", "Il18r1", "Il7r", "Cd44", "Il17f", "Ccr6", "Icos", "Il1r1"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_gdT T17.png", dpi=300, width=20, height=20)
+ggsave(file = "Plots/T/features_gdT T17.png", dpi=300, width=20, height=20)
 ```
 
 
@@ -73,21 +73,21 @@ ggsave(file = "plots/T/features_gdT T17.png", dpi=300, width=20, height=20)
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 32}
 # activation / exhaustion markers
 FeaturePlot(T_cells, features = c("Pdcd1", "Havcr2", "Lag3", "Tigit", "Tnfrsf4", "Tnfrsf9", "Icos", "Ctla4", "Klrd1", "Irf8", "Klrc1", "Tox"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_activation.png", dpi=300, width=30, height=40)
+ggsave(file = "Plots/T/features_T_activation.png", dpi=300, width=30, height=40)
 ```
 
 
 ```{r eval=FALSE, fig.height=24, fig.width=24, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE}
 # activation / exhaustion markers
 FeaturePlot(T_cells, features = c("Pdcd1", "Havcr2", "Lag3", "Tigit", "Tnfrsf4", "Tnfrsf9", "Icos", "Ctla4", "Klrd1", "Irf8", "Klrc1", "Tox"), order=TRUE,pt.size=1, reduction="tsne", ncol=4, label= TRUE)
-ggsave(file = "plots/T/features_T_activation for teva.png", dpi=300, width=24, height=18)
+ggsave(file = "Plots/T/features_T_activation for teva.png", dpi=300, width=24, height=18)
 ```
 
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 24}
 ### effector markers 
 FeaturePlot(T_cells, features = c("Gzmb", "Prf1", "Ifng", "Mki67", "Gzmc", "Gzma", "Klrg1", "Il7r", "Cd52"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_effector.png", dpi=300, width=30, height=20)
+ggsave(file = "Plots/T/features_T_effector.png", dpi=300, width=30, height=20)
 ```
 Havcr2 = Tim3  
 Tnfrsf4 = OX40  
@@ -102,7 +102,7 @@ CD52: effector molecule
 ```{r eval=FALSE, fig.height=24, fig.width=24, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE}
 ### effector markers 
 FeaturePlot(T_cells, features = c("Gzmb", "Prf1", "Ifng", "Mki67", "Gzmc", "Gzma", "Klrg1"),order=TRUE,pt.size=1, reduction="tsne", ncol=4, label= TRUE)
-ggsave(file = "plots/T/features_T_effector for teva.png", dpi=300, width=24, height=12)
+ggsave(file = "Plots/T/features_T_effector for teva.png", dpi=300, width=24, height=12)
 ```
 
 
@@ -110,43 +110,43 @@ ggsave(file = "plots/T/features_T_effector for teva.png", dpi=300, width=24, hei
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 16}
 # naive
 FeaturePlot(T_cells, features = c("Sell", "Il7r", "Ccr7", "Ms4a4c"),order=TRUE,pt.size=1, reduction="tsne", ncol=2, label= TRUE)
-ggsave(file = "plots/T/features_T_naive.png", dpi=300, width=20, height=20)
+ggsave(file = "Plots/T/features_T_naive.png", dpi=300, width=20, height=20)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 16}
 # memory 
 FeaturePlot(T_cells, features = c("Sell", "Cd44", "Il7r", "Ccr7", "Tcf7", "Cxcr6"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_memory.png", dpi=300, width=30, height=20)
+ggsave(file = "Plots/T/features_T_memory.png", dpi=300, width=30, height=20)
 ```
 
 ### d. effector memory markers
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 32}
 FeaturePlot(T_cells, features = c("Bach2", "Prdm1", "Il7r", "Cd44", "Cx3cr1", "Id2","Klf2","Klrg1","Lef1","Stat4", "Tbx21", "Zeb2"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_effector memory.png", dpi=300, width=30, height=40)
+ggsave(file = "Plots/T/features_T_effector memory.png", dpi=300, width=30, height=40)
 ```
 
 ```{r eval=FALSE, fig.height=24, fig.width=24, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE}
 FeaturePlot(T_cells, features = c("Bach2", "Prdm1", "Il7r", "Cd44", "Cx3cr1", "Id2","Klf2","Klrg1","Lef1","Stat4", "Tbx21", "Zeb2"),order=TRUE,pt.size=1, reduction="tsne", ncol=4, label= TRUE)
-ggsave(file = "plots/T/features_T_effector memory for teva.png", dpi=300, width=32, height=24)
+ggsave(file = "Plots/T/features_T_effector memory for teva.png", dpi=300, width=32, height=24)
 ```
 
 ### e. central memory markers
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 40}
 FeaturePlot(T_cells, features = c("Tcf7","Bach2", "Bcl16", "Ccr7", "Il7r","Cd27", "Cd44", "Sell","Id3", "Klf2", "Lcr7", "Lef1","Slamf6", "Stat3","Tfap4"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_central memory.png", dpi=300, width=30, height=50, limitsize=FALSE)
+ggsave(file = "Plots/T/features_T_central memory.png", dpi=300, width=30, height=50, limitsize=FALSE)
 ```
 
 
 ### f. resident memory markers
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=32, fig.height= 48}
 FeaturePlot(T_cells, features = c("Prdm1", "Itgae", "Il7r", "Cd44","Itga1", "Cd69", "Crtam","Dusp6", "Egr2","Fosb", "Foxo3", "Gzma", "Gzmb","Znf683", "Id3", "Il2ra", "Irf4","Jun", "Junb", "Myc", "Nr4a1", "Rgs1"), order=TRUE, pt.size=1, reduction="tsne", ncol=4, label= TRUE)
-ggsave(file = "plots/T/features_T_resident memory.png", dpi=300, width=40, height=60, limitsize=FALSE)
+ggsave(file = "Plots/T/features_T_resident memory.png", dpi=300, width=40, height=60, limitsize=FALSE)
 ```
 
 ### g. B cells
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 24}
 FeaturePlot(T_cells, features = c("Cd19", "Ms4a1", "Iglc1", "Ighm", "Igkc"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/Features_T_B cells.png", dpi=300, width=30, height=20)
+ggsave(file = "Plots/T/Features_T_B cells.png", dpi=300, width=30, height=20)
 ```
 
 ### h. markers from nature communication
@@ -155,33 +155,33 @@ https://www.nature.com/articles/s41467-021-23324-4
 #### i. early activated
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 64}
 FeaturePlot(T_cells, features = c("Gzmk", "Fos", "Cd69", "Zfp36", "Fosb", "CCl5", "Grzmm", "Dusp2", "Lyar", "Samd3", "Cxcr4", "Ctsw", "Anxa1", "Klrg1", "Aoah", "Tagap", "Klrd1", "Ier2", "Gzma", "Cst7", "Itm2c", "Parp8", "Btg2"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_nature_early activated.png", dpi=300, width=30, height=80, limitsize= FALSE)
+ggsave(file = "Plots/T/features_T_nature_early activated.png", dpi=300, width=30, height=80, limitsize= FALSE)
 ```
 
 #### ii. precursor exhausted
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 64}
 FeaturePlot(T_cells, features = c("Lag3", "Xcl1", "Crtam", "Ifng", "Ccl4", "Pdcd1", "Dusp4", "Zeb2", "Nr4a2", "Sla", "Nkg7", "Tigit", "Ctsw", "Tnfrsf9", "Tox", "Lyst", "Tnfsf4", "Ccl3", "Gzmb", "Rab27a", "Prf1", "Cd70", "Plscr1", "Cxcl13"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_nature_precursor exhausted.png", dpi=300, width=30, height=80, limitsize= FALSE)
+ggsave(file = "Plots/T/features_T_nature_precursor exhausted.png", dpi=300, width=30, height=80, limitsize= FALSE)
 ```
   
 #### iii. terminally exhausted effector
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 64}
 FeaturePlot(T_cells, features = c("Lag3", "Prf1", "Havcr2", "Gzmb", "Nkg7", "Ctsd", "Klrd1", "Id2", "Cst7", "Pdcd1", "Tnfrsf9", "Tigit", "Ctsw", "Ccl4", "Cd63", "Ccl3", "Ifng", "Cxcr6", "Fasl", "Rbpj", "Chst12", "Fam3c", "Csf1"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/features_T_nature_exhausted.png", dpi=300, width=30, height=80, limitsize= FALSE)
+ggsave(file = "Plots/T/features_T_nature_exhausted.png", dpi=300, width=30, height=80, limitsize= FALSE)
 ```
   
   
 #### iv. naive-like (naive or central memory)
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 24}
 FeaturePlot(T_cells, features = c("Ccr7", "Il7r", "Sell", "Tcf7", "Txk", "S1pr1", "Lef1", "Satb1"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/T_features_T_nature_naive-like.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_features_T_nature_naive-like.png", dpi=300, width=30, height=30)
 ```
 
   
 #### v. effector memory
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 64}
 FeaturePlot(T_cells, features = c("Gzma", "Gzmk", "Nkg7", "Ctsw", "Gzmb", "Ccl5", "Cst7", "Prf1", "Abi3", "Fasl", "Itm2c", "1500009L16Rik", "Eomes", "Chst12", "Ccr5", "Hcst", "Aoah", "Hopx", "Slamf7", "Cxcr3", "Oasl1", "F2r", "Cxcr6"),order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
-ggsave(file = "plots/T/T_features_T_nature_effector memory.png", dpi=300, width=30, height=80, limitsize= FALSE)
+ggsave(file = "Plots/T/T_features_T_nature_effector memory.png", dpi=300, width=30, height=80, limitsize= FALSE)
 ```
 
 
@@ -190,31 +190,31 @@ ggsave(file = "plots/T/T_features_T_nature_effector memory.png", dpi=300, width=
 ### a. activation/exhaustion/effector
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Pdcd1", "Havcr2", "Lag3", "Tigit", "Tnfrsf4", "Tnfrsf9", "Icos", "Ctla4", "Klrd1", "Irf8", "Klrc1", "Tox1", "Cx3cr1", "Xcl1", "Gzmb", "Prf1", "Mki67", "Ifng", "Gzmc", "Gzma", "Klrg1", "Il7r", "Cd52"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_activated effector.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_activated effector.png", dpi=300, width=30, height=30)
 ```
 
 ### b. naive/memory
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Sell", "Il7r", "Ccr7", "Ms4a4c","Sell", "Cd44", "Il7r", "Ccr7", "Tcf7", "Cxcr6", "Txk", "S1pr1", "Lef1", "Satb1" ))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_naive memory.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_naive memory.png", dpi=300, width=30, height=30)
 ```
 
 ### c. effector memory
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Bach2", "Prdm1", "Il7r", "Cd44", "Cx3cr1", "Id2", "Klf2", "Klrg1", "Lef1", "Stat4","Tbx21","Zeb2", "Gzma", "Gzmk", "Nkg7", "Cd8a", "Cd8b1", "Ctsw", "Gzmb", "Ccl5", "Cst7", "Prf1", "Abi3", "Fasl", "Itm2c", "1500009L16Rik", "Eomes", "Chst12", "Ccr5", "Hcst", "Aoah", "Hopx", "Slamf7", "Cxcr3", "Oasl1", "F2r", "Cxcr6"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_effector memory.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_effector memory.png", dpi=300, width=30, height=30)
 ```
 
 ### d. central memory
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Bach2", "Bcl16", "Ccr7", "Il7r","Cd27", "Cd44", "Sell","Id3", "Klf2", "Lcr7", "Lef1","Slamf6", "Stat3", "Tcf7","Tfap4"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_central memory.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_central memory.png", dpi=300, width=30, height=30)
 ```
 
 ### e. resident memory
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Prdm1", "Itgae", "Il7r", "Cd44", "Itga1", "Cd69", "Crtam", "Cx3cr1", "Dusp6", "Egr2", "Fabp5", "Fos", "Fosb", "Foxo3", "Gzma", "Gzmb", "Znf683", "Id3", "Il2ra", "Irf4", "Jun", "Junb", "Myc", "Nr4a1", "Rgs1"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_resident memory.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_resident memory.png", dpi=300, width=30, height=30)
 ```
 
 Cd244a = 2B4  
@@ -224,31 +224,31 @@ Phenotypically, the expression of inhibitory receptors increased gradually, incl
 #### i. early activated
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Gzmk", "Fos", "Cd69", "Zfp36", "Fosb", "CCl5", "Grzmm", "Dusp2", "Lyar", "Samd3", "Cxcr4", "Ctsw", "Anxa1", "Klrg1", "Aoah", "Tagap", "Klrd1", "Ier2", "Gzma", "Cst7", "Itm2c", "Parp8", "Btg2"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_nature_early activated.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_nature_early activated.png", dpi=300, width=30, height=30)
 ```
   
 #### ii. precursor exhausted
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Lag3", "Xcl1", "Crtam", "Ifng", "Ccl4", "Pdcd1", "Dusp4", "Zeb2", "Nr4a2", "Sla", "Nkg7", "Tigit", "Ctsw", "Tnfrsf9", "Tox", "Lyst", "Tnfsf4", "Ccl3", "Gzmb", "Rab27a", "Prf1", "Cd70", "Plscr1", "Cxcl13"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_nature_precursor exhausted.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_nature_precursor exhausted.png", dpi=300, width=30, height=30)
 ```
 
 #### iii. terminally exhausted effector
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Lag3", "Prf1", "Havcr2", "Gzmb", "Nkg7", "Ctsd", "Klrd1", "Id2", "Cst7", "Pdcd1", "Tnfrsf9", "Tigit", "Ctsw", "Ccl4", "Cd63", "Ccl3", "Ifng", "Cxcr6", "Fasl", "Rbpj", "Chst12", "Fam3c", "Csf1"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_nature_exhausted.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_nature_exhausted.png", dpi=300, width=30, height=30)
 ```
 
 #### iv. naive-like
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Ccr7", "Il7r", "Sell", "Tcf7", "Txk", "S1pr1", "Lef1", "Satb1"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_nature_naive-like.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_nature_naive-like.png", dpi=300, width=30, height=30)
 ```
 
 #### v. effector memory
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=6}
 DoHeatmap(T_cells, features = c("Gzma", "Gzmk", "Nkg7", "Ctsw", "Gzmb", "Ccl5", "Cst7", "Prf1", "Abi3", "Fasl", "Itm2c", "1500009L16Rik", "Eomes", "Chst12", "Ccr5", "Hcst", "Aoah", "Hopx", "Slamf7", "Cxcr3", "Oasl1", "F2r", "Cxcr6"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_nature_effector memory.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/T_heatmap_nature_effector memory.png", dpi=300, width=30, height=30)
 ```
 
 
@@ -265,11 +265,11 @@ T_cells = RenameIdents(T_cells,
                        "6" = "6_Activated (?) CD8+")
 DimPlot(T_cells, reduction = "tsne", label=TRUE, label.size= 7, pt.size=2)+
   theme(legend.text= element_text(size=24))
-ggsave(file = "plots/T/T cells - annotated tsne - with names.png", dpi=300, width=25, height=20)
+ggsave(file = "Plots/T/T cells - annotated tsne - with names.png", dpi=300, width=25, height=20)
 
 DimPlot(T_cells, reduction = "tsne", label=FALSE, pt.size=2)+
   theme(legend.text= element_text(size=24))
-ggsave(file = "plots/T/T cells - annotated tsne.png", dpi=300, width=25, height=20)
+ggsave(file = "Plots/T/T cells - annotated tsne.png", dpi=300, width=25, height=20)
 saveRDS(T_cells, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/T cells_object.rds")
 
 ```
@@ -283,7 +283,7 @@ ggplot(T_cells@meta.data, aes(x=T_cells@active.ident, fill=Treatment)) + geom_ba
     labs(x="")+
     theme(legend.title=element_text(size=18),legend.text= element_text(size=14), 
           axis.text.x=element_text(size=8,angle=45, hjust=1))
-ggsave(file = "plots/T/T_stacked bar plot.png", dpi=300, width=10, height=10)
+ggsave(file = "Plots/T/T_stacked bar plot.png", dpi=300, width=10, height=10)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=18, fig.height= 10}
@@ -294,7 +294,7 @@ ggplot(T_cells@meta.data, aes(x=T_cells@active.ident, fill=Treatment)) + geom_ba
     theme(legend.title=element_text(size=18),legend.text= element_text(size=14), 
           axis.text.x=element_text(size=12,angle=45, hjust=1))
 
-ggsave(file = "plots/T/T_bar plot.png", dpi=300, width=15, height=10)
+ggsave(file = "Plots/T/T_bar plot.png", dpi=300, width=15, height=10)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=18, fig.height= 10}
@@ -313,7 +313,7 @@ ggplot(proportions, aes(x=cluster, y=prop, fill=Treatment))+
     labs(x="", y="% of total cells")+
     theme(legend.title=element_text(size=18),legend.text= element_text(size=14), 
           axis.text.x=element_text(size=12,angle=45, hjust=1))
-ggsave(file = "plots/T/T_bar plot_proportions.png", dpi=300, width=15, height=10)       
+ggsave(file = "Plots/T/T_bar plot_proportions.png", dpi=300, width=15, height=10)       
 ```
 
 
@@ -323,7 +323,7 @@ ggsave(file = "plots/T/T_bar plot_proportions.png", dpi=300, width=15, height=10
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=6, fig.height=6}
 FeaturePlot(T_cells, features = c("Batf"),pt.size=1, reduction="tsne")
-ggsave(file = "plots/T/features_T_Batf.png", dpi=300, width=10, height=10)
+ggsave(file = "Plots/T/features_T_Batf.png", dpi=300, width=10, height=10)
 ```
 
 
@@ -331,7 +331,7 @@ ggsave(file = "plots/T/features_T_Batf.png", dpi=300, width=10, height=10)
 library(ggpubr)
 library(tidyr)
 VlnPlot(T_cells, features = c("Batf"))+stat_compare_means()
-ggsave(file = "plots/T/Vln_T_Batf.png", dpi=300, width=15, height=10)
+ggsave(file = "Plots/T/Vln_T_Batf.png", dpi=300, width=15, height=10)
 ```
 
 ### b. glycolysis
@@ -339,17 +339,17 @@ ggsave(file = "plots/T/Vln_T_Batf.png", dpi=300, width=15, height=10)
 visualization of glycolysis pathway in different ways:
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height=24}
 FeaturePlot(T_cells, features = c("Pfkm", 'Psmc4', 'Nup85', 'Ppha1', 'Cdk1', "Cenpa", "Gpi", "Nup155", "Gpc1"),order=TRUE,pt.size=1, reduction="tsne", ncol=3)
-ggsave(file = "plots/T/features_T_glycolysis.png", dpi=300, width=30, height=30)
+ggsave(file = "Plots/T/features_T_glycolysis.png", dpi=300, width=30, height=30)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height=6}
 VlnPlot(T_cells, features = c('Psmc4', 'Ppha1', 'Cdk1', "Cenpa", "Gpi"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
-ggsave(file = "plots/T/Vln_T_glycolysis.png", dpi=300, width=15, height=10)
+ggsave(file = "Plots/T/Vln_T_glycolysis.png", dpi=300, width=15, height=10)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height=5}
 DotPlot(object=T_cells, features = c('Psmc4', 'Ppha1', 'Cdk1', "Cenpa")) + coord_flip()+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1))
-ggsave(file = "plots/T/dot_T_glycolysis.png", dpi=300, width=10, height=7)
+ggsave(file = "Plots/T/dot_T_glycolysis.png", dpi=300, width=10, height=7)
 ```
 
 
@@ -357,60 +357,60 @@ ggsave(file = "plots/T/dot_T_glycolysis.png", dpi=300, width=10, height=7)
 glycolysis_list = list(c("Pfkm", 'Psmc4', 'Nup85', 'Ppha1', 'Cdk1', "Cenpa", "Gpi", "Nup155", "Gpc1"))
 T_cells = AddModuleScore(object = T_cells, features = glycolysis_list, name = "glycolysis_signature")
 FeaturePlot(object = T_cells, features = "glycolysis_signature1", reduction = "tsne")
-ggsave(file = "plots/T/signature_T_glycolysis.png", dpi=300, width=10, height=10)
+ggsave(file = "Plots/T/signature_T_glycolysis.png", dpi=300, width=10, height=10)
 ```
 
 more markers:
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=40, fig.height=72}
 FeaturePlot(T_cells, features = c("Hk2","Aldoc","Pfkl","Nup85","Nup155", "Tpi1","Adpgk","Pfkfb1","Pfkfb4","Hk3", "Pfkfb2","Pfkfb3","Nup35","Ndc1","Gnpda2", "Aldoa","Pgm2l1","Pkm","Nup93","Pfkm","Nup54",'Nup37', 'Gpi1', 'Aaas',"Nup205",'Bpgm','Nup133',"Nup43","Nup88",'Nupl2','Nup160',"Gnpda1","Nup188","Nup107","Pom121","Gapdh","Eno1b","Eno3","Gapdhs","Pgk1","Eno1",'Nup98',"Seh1l","Nup62","Aldoa"), order=TRUE,pt.size=1, reduction="tsne", ncol=5)
-ggsave(file = "plots/T/feature_T_glycolysis_2.png", dpi=300, width=50, height=90, limitsize=FALSE)
+ggsave(file = "Plots/T/feature_T_glycolysis_2.png", dpi=300, width=50, height=90, limitsize=FALSE)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=8}
 glycolysis_list2 = list(c("Hk2","Aldoc","Pfkl","Nup85","Nup155", "Tpi1","Adpgk","Pfkfb1","Pfkfb4","Hk3", "Pfkfb2","Pfkfb3","Nup35","Ndc1","Gnpda2", "Aldoa","Pgm2l1","Pkm","Nup93","Pfkm","Nup54",'Nup37', 'Gpi1', 'Aaas',"Nup205",'Bpgm','Nup133',"Nup43","Nup88",'Nupl2','Nup160',"Gnpda1","Nup188","Nup107","Pom121","Gapdh","Eno1b","Eno3","Gapdhs","Pgk1","Eno1",'Nup98',"Seh1l","Nup62","Aldoa"))
 T_cells = AddModuleScore(object = T_cells, features = glycolysis_list2, name = "glycolysis2_signature")
 FeaturePlot(object = T_cells, features = "glycolysis2_signature1", reduction = "tsne")
-ggsave(file = "plots/T/signature_T_glycolysis2.png", dpi=300, width=10, height=10)
+ggsave(file = "Plots/T/signature_T_glycolysis2.png", dpi=300, width=10, height=10)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=8, fig.height=8}
 DoHeatmap(T_cells, features = c("Pfkm", 'Psmc4', 'Nup85', 'Ppha1', 'Cdk1', "Cenpa", "Gpi", "Nup155", "Gpc1", "Hk2","Aldoc","Pfkl","Nup85","Nup155", "Tpi1","Adpgk","Pfkfb1","Pfkfb4","Hk3", "Pfkfb2","Pfkfb3","Nup35","Ndc1","Gnpda2", "Aldoa","Pgm2l1","Pkm","Nup93","Pfkm","Nup54",'Nup37', 'Gpi1', 'Aaas',"Nup205",'Bpgm','Nup133',"Nup43","Nup88",'Nupl2','Nup160',"Gnpda1","Nup188","Nup107","Pom121","Gapdh","Eno1b","Eno3","Gapdhs","Pgk1","Eno1",'Nup98',"Seh1l","Nup62","Aldoa"))+ NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/T/T_heatmap_glycolysis.png", dpi=300, width=20, height=30)
+ggsave(file = "Plots/T/T_heatmap_glycolysis.png", dpi=300, width=20, height=30)
 ```
 
 
 ### c. oxydative phosphorylation
 ```{r eval=FALSE, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE}
 FeaturePlot(T_cells, features = c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid",	"Ccnb1",	"Cdk1",	"Chchd10","Coa6",	"Coq7",	"Coq9", "Cox4i2", "Cox7a1",	"Cyc1",	"Cycs",	"Dguok",	"Dld","Dnajc30",	"Fxn",	"Gadd45gip1",	"Iscu",	"Msh2",	"mt-Atp6",	"mt-Atp8",	"mt-Co1", "mt-Co2",	"mt-Co3",	"mt-Cytb",	"mt-Nd1",	"mt-Nd2",	"mt-Nd3",	"mt-Nd4",	"mt-Nd4l",	"mt-Nd5",	"mt-Nd6",	"Mtch2",	"Myc", "Ndufa1", "Ndufa10",	"Ndufa11"	,"Ndufa12",	"Ndufa13",	"Ndufa2",	"Ndufa3",	"Ndufa5",	"Ndufa6",	"Ndufa7",	"Ndufa8",	"Ndufa9",	"Ndufab1",	"Ndufaf1", "Ndufc1",	"Ndufs1",	"Ndufs2","Ndufv1",	"Nipsnap2",	"Nupr1", "Pde12", "Pde2a",	"Pink1",	"Ppif",	"Sdha",	"Sdhaf2", "Shmt2",	"Slc25a23",	"Slc25a33",	"Stoml2","Tefm",	"Tmem135",	"Tnf",	"Uqcc2",	"Uqcc3",	"Uqcr10" ),order=TRUE,pt.size=1, reduction="tsne", ncol=9)                    
-ggsave(file = "plots/T/features_T_oxidative phosphorylation.png", dpi=300, width=90, height=90, limitsize=FALSE)
+ggsave(file = "Plots/T/features_T_oxidative phosphorylation.png", dpi=300, width=90, height=90, limitsize=FALSE)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height=15}
 VlnPlot(T_cells, features = c("Ccnb1",	"Cdk1",	"Chchd10","Coa6",	"Cyc1",	"Cycs",	"Dguok",	"Dld",	"Fxn"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
-ggsave(file = "plots/T/Vln_T_oxidative phosphorylation_1.png", dpi=300, width=20, height=30, limitsize=FALSE)
+ggsave(file = "Plots/T/Vln_T_oxidative phosphorylation_1.png", dpi=300, width=20, height=30, limitsize=FALSE)
                               
 VlnPlot(T_cells, features = c("Gadd45gip1",	"Iscu","mt-Atp6",	"mt-Atp8",	"mt-Co1", "mt-Co2",	"mt-Co3",	"mt-Cytb",	"mt-Nd1",	"mt-Nd2"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
-ggsave(file = "plots/T/Vln_T_oxidative phosphorylation_2.png", dpi=300, width=20, height=30, limitsize=FALSE)
+ggsave(file = "Plots/T/Vln_T_oxidative phosphorylation_2.png", dpi=300, width=20, height=30, limitsize=FALSE)
                               
 VlnPlot(T_cells, features = c("mt-Nd3",	"mt-Nd4",	"mt-Nd4l",	"mt-Nd5","Mtch2", "Ndufa1", "Ndufa10",	"Ndufa11"	,"Ndufa12"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
-ggsave(file = "plots/T/Vln_T_oxidative phosphorylation_3.png", dpi=300, width=20, height=30, limitsize=FALSE)
+ggsave(file = "Plots/T/Vln_T_oxidative phosphorylation_3.png", dpi=300, width=20, height=30, limitsize=FALSE)
         
 VlnPlot(T_cells, features = c("Ndufa13",	"Ndufa2",	"Ndufa3",	"Ndufa5",	"Ndufa6",	"Ndufa7",	"Ndufa8",	"Ndufa9",	"Ndufab1"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
-ggsave(file = "plots/T/Vln_T_oxidative phosphorylation_4.png", dpi=300, width=20, height=30, limitsize=FALSE)
+ggsave(file = "Plots/T/Vln_T_oxidative phosphorylation_4.png", dpi=300, width=20, height=30, limitsize=FALSE)
 
 VlnPlot(T_cells, features = c("Ndufa10",	"Ndufa11"	,"Ndufa12", "Ndufc1",	"Ndufs1",	"Ndufs2","Ndufv1", "Pde2a",	"Sdha",	"Sdhaf2"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
-ggsave(file = "plots/T/Vln_T_oxidative phosphorylation_5.png", dpi=300, width=20, height=30, limitsize=FALSE)
+ggsave(file = "Plots/T/Vln_T_oxidative phosphorylation_5.png", dpi=300, width=20, height=30, limitsize=FALSE)
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height=10}
 VlnPlot(T_cells, features = c("Stoml2",	"Tmem135",	"Tnf",	"Uqcc2",	"Uqcc3",	"Uqcr10"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
-ggsave(file = "plots/T/Vln_T_oxidative phosphorylation_6.png", dpi=300, width=20, height=25, limitsize=FALSE)            
+ggsave(file = "Plots/T/Vln_T_oxidative phosphorylation_6.png", dpi=300, width=20, height=25, limitsize=FALSE)            
 ```
 
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height=15}
 DotPlot(object=T_cells, features = c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid","Ccnb1","Cdk1","Chchd10","Coa6",	"Coq7","Coq9","Cox4i2","Cox7a1","Cyc1","Cycs","Dguok","Dld","Dnajc30","Fxn","Gadd45gip1","Iscu","Msh2","mt-Atp6","mt-Atp8","mt-Co1","mt-Co2","mt-Co3","mt-Cytb","mt-Nd1","mt-Nd2","mt-Nd3","mt-Nd4","mt-Nd4l","mt-Nd5","mt-Nd6","Mtch2","Myc","Ndufa1","Ndufa10","Ndufa11","Ndufa12","Ndufa13","Ndufa2","Ndufa3","Ndufa5","Ndufa6","Ndufa7","Ndufa8","Ndufa9","Ndufab1","Ndufaf1","Ndufc1","Ndufs1","Ndufs2","Ndufv1","Nipsnap2","Nupr1","Pde12","Pde2a","Pink1","Ppif","Sdha","Sdhaf2","Shmt2","Slc25a23","Slc25a33","Stoml2","Tefm","Tmem135","Tnf","Uqcc2","Uqcc3","Uqcr10")) + coord_flip()+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1))
-ggsave(file = "plots/T/dot_T_oxidative phosphorylation.png", dpi=300, width=15, height=19)
+ggsave(file = "Plots/T/dot_T_oxidative phosphorylation.png", dpi=300, width=15, height=19)
 
 ```
 
@@ -419,7 +419,7 @@ ggsave(file = "plots/T/dot_T_oxidative phosphorylation.png", dpi=300, width=15, 
 oxidation_list = list(c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid","Ccnb1","Cdk1","Chchd10","Coa6","Coq7","Coq9","Cox4i2","Cox7a1","Cyc1","Cycs","Dguok","Dld","Dnajc30","Fxn","Gadd45gip1","Iscu","Msh2","mt-Atp6","mt-Atp8","mt-Co1","mt-Co2","mt-Co3","mt-Cytb","mt-Nd1","mt-Nd2","mt-Nd3","mt-Nd4","mt-Nd4l","mt-Nd5","mt-Nd6","Mtch2","Myc","Ndufa1","Ndufa10","Ndufa11","Ndufa12","Ndufa13","Ndufa2","Ndufa3","Ndufa5","Ndufa6","Ndufa7","Ndufa8","Ndufa9",	"Ndufab1",	"Ndufaf1", "Ndufc1",	"Ndufs1",	"Ndufs2", "Ndufv1",	"Nipsnap2",	"Nupr1", "Pde12", "Pde2a",	"Pink1",	"Ppif", "Sdha","Sdhaf2","Shmt2", "Slc25a23","Slc25a33", "Stoml2","Tefm", "Tmem135","Tnf","Uqcc2", "Uqcc3","Uqcr10"))
 T_cells = AddModuleScore(object = T_cells, features = oxidation_list, name = "oxidation_signature")
 FeaturePlot(object = T_cells, features = "oxidation_signature1", reduction = "tsne")
-ggsave(file = "plots/T/signature_T_oxidation.png", dpi=300, width=10, height=10)
+ggsave(file = "Plots/T/signature_T_oxidation.png", dpi=300, width=10, height=10)
 ```
 
 

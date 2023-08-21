@@ -79,7 +79,7 @@ VlnPlot(merged_0,
         group.by="Treatment", 
         cols=c("#CFBAE1", "#5C7D9D","#A4DEF9"), 
         pt.size = 0.000001)
-ggsave(filename = "plots/QC.png", dpi=300, height=10, width=15, device = 'png')
+ggsave(filename = "Plots/QC.png", dpi=300, height=10, width=15, device = 'png')
 
 VlnPlot(merged_0, 
         features="percent.mt", 
@@ -103,7 +103,7 @@ plot2 = FeatureScatter(merged_0,
       labs(color = "Treatment")+
       theme(axis.text.x=element_text(angle=45, hjust=1))
 plot1 + plot2
-ggsave(filename = 'plots/Scatter Feature.png', dpi=300, height=10, width=15, device = 'png')
+ggsave(filename = 'Plots/Scatter Feature.png', dpi=300, height=10, width=15, device = 'png')
 
 merged = subset(merged_0, subset = nFeature_RNA > 500 & nFeature_RNA < 4000 & nCount_RNA<20000 & percent.mt < 10 & percent.ribo< 50)
 dim(merged)
@@ -136,7 +136,7 @@ DimPlot(merged, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5
 
 #Determine the ‘dimensionality’ of the dataset
 ElbowPlot(merged, ndims = 40) + theme_classic()
-ggsave(filename = 'plots/Elbow Plot.png', dpi=300, height=15, width=15, device = 'png')
+ggsave(filename = 'Plots/Elbow Plot.png', dpi=300, height=15, width=15, device = 'png')
 
 saveRDS(merged, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/All cells/Teva_3_merged_before_dim_object.rds")
 ```
@@ -159,10 +159,10 @@ merged = RunUMAP(merged, dims = 1:10)
 
 merged = RunTSNE(merged, dims = 1:10, verbose = F)
 DimPlot(merged, reduction = "tsne", label= TRUE, pt.size=0.5)
-ggsave(file = "plots/tSNE.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/tSNE.png", dpi=300, width=12, height=12)
 
 TSNEPlot(merged, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.5)
-ggsave(file = "plots/tSNE - by treatment.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/tSNE - by treatment.png", dpi=300, width=12, height=12)
 ```
 We used tSNE reduction
 
@@ -183,7 +183,7 @@ merged.markers %>%
     group_by(cluster) %>%
     top_n(n = 10, wt = avg_log2FC) -> top10
 DoHeatmap(merged, features = top10$gene, label=FALSE) + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "plots/DE genes - heatmap - legend.png", dpi=300, width=12, height=22)
+ggsave(file = "Plots/DE genes - heatmap - legend.png", dpi=300, width=12, height=22)
 ```
 
 ## 9. Lineage identification
@@ -191,25 +191,25 @@ ggsave(file = "plots/DE genes - heatmap - legend.png", dpi=300, width=12, height
 ### a. T cells
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 16}
 FeaturePlot(merged, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label=TRUE)
-ggsave(file = "plots/Features_T.png", dpi=300, width=30, height=20)
+ggsave(file = "Plots/Features_T.png", dpi=300, width=30, height=20)
 ```
 
 ### b. B cells
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 16}
 FeaturePlot(merged, features = c("Cd19", "Ms4a1", "Iglc1", "Ighm"), order=TRUE,pt.size=1, reduction="tsne", ncol=2, label=TRUE)
-ggsave(file = "plots/Features_B.png", dpi=300, width=20, height=20)
+ggsave(file = "Plots/Features_B.png", dpi=300, width=20, height=20)
 ```
 
 ### c. NK cells
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 16}
 FeaturePlot(merged, features = c("Ncr1", "Fcgr3", "Prf1", "Gzma", "Klra4", "Klra7"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label=TRUE)
-ggsave(file = "plots/Features_NK.png", dpi=300, width=30, height=20)
+ggsave(file = "Plots/Features_NK.png", dpi=300, width=30, height=20)
 ```
 
 ### d. myeloid cells
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=24, fig.height= 32}
 FeaturePlot(merged, features = c("Ptprc", "Cd14","Cd4", "Cd8a", "Fcgr3", "Itgam", "Itgax", "Tnfsf4", "Apoe","Cd80","Cd86","H2-Ab1"), order=TRUE, pt.size=1, reduction="tsne", ncol=4, label=TRUE)
-ggsave(file = "plots/Features_myeloid.png", dpi=300, width=40, height=30)
+ggsave(file = "Plots/Features_myeloid.png", dpi=300, width=40, height=30)
 ```
 
 
@@ -229,10 +229,10 @@ merged = RenameIdents(merged,
                        "9" = "9_Myeloid cells",
                        "10"= "10_B cells")
 DimPlot(merged, reduction = "tsne", label=TRUE, pt.size=0.5, label.size=5)+ theme(legend.text= element_text(size=18))
-ggsave(file = "plots/annotated tsne - with label.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/annotated tsne - with label.png", dpi=300, width=12, height=12)
 
 DimPlot(merged, reduction = "tsne", label=FALSE, pt.size=0.5, label.size=5)+ theme(legend.text= element_text(size=18))
-ggsave(file = "plots/annotated tsne.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/annotated tsne.png", dpi=300, width=12, height=12)
 saveRDS(merged, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_merged_object.rds")
 ```
 
@@ -246,5 +246,5 @@ ggplot(merged@meta.data, aes(x=merged@active.ident, fill=Treatment)) + geom_bar(
     theme(legend.title=element_text(size=16),legend.text= element_text(size=12), 
           axis.text.x=element_text(size= 12, angle=45, hjust=1))
 
-ggsave(file = "plots/stacked bar plot.png", dpi=300, width=14, height=8)
+ggsave(file = "Plots/stacked bar plot.png", dpi=300, width=14, height=8)
 ```

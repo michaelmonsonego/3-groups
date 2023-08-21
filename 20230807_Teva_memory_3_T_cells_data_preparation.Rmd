@@ -50,7 +50,6 @@ T_cells_0 = ScaleData(T_cells_0, vars.to.regress="percent.mt")
 # Identify the 10 most highly variable genes
 #top10_T_0 = head(VariableFeatures(T_cells_0), 10)
 
-setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Figures/T cells/")
 ```
 
 ## 3. PCA

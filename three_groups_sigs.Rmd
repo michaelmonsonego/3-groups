@@ -28,17 +28,32 @@ memory.limit(10^14)
 setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups")
 use_python((r"(C:\Users\user\AppData\Local\Programs\Python\Python311)"), required = TRUE)
 source("//asafmadilabfs/asafmadilab$/michael/Madi lab/Signature_propo/signature_utils.R")
-Tcells <- readRDS('Objects\\.rds')
+Tcells <- readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/T cells_object.rds")
 ```
 
 
 ```{r}
 oxphos_sig <- c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid","Ccnb1","Cdk1","Chchd10","Coa6","Coq7","Coq9","Cox4i2","Cox7a1","Cyc1","Cycs","Dguok","Dld","Dnajc30","Fxn","Gadd45gip1","Iscu","Msh2","mt-Atp6","mt-Atp8","mt-Co1","mt-Co2","mt-Co3","mt-Cytb","mt-Nd1","mt-Nd2","mt-Nd3","mt-Nd4","mt-Nd4l","mt-Nd5","mt-Nd6","Mtch2","Myc","Ndufa1","Ndufa10","Ndufa11","Ndufa12","Ndufa13","Ndufa2","Ndufa3","Ndufa5","Ndufa6","Ndufa7","Ndufa8","Ndufa9", "Ndufab1", "Ndufaf1", "Ndufc1", "Ndufs1", "Ndufs2","Ndufv1", "Nipsnap2", "Nupr1", "Pde12", "Pde2a", "Pink1", "Ppif", "Sdha","Sdhaf2","Shmt2","Slc25a23","Slc25a33","Stoml2","Tefm","Tmem135","Tnf","Uqcc2","Uqcc3","Uqcr10")
 
+oxphos_sig <- make_signature(Tcells, oxphos,idents = c("D","A","B"), format_flag = TRUE)
+oxphos_sig_obj <- oxphos_sig[[1]]
+oxphos_sig[[3]]
+ggsave("Plots/T/oxphos_sig_box.png", width = 20, height = 20, units = "cm")
+oxphos_sig[[2]]
+ggsave("Plots/T/oxphos_sig_tsne.png", width = 20, height = 20, units = "cm")
 
-
-
-
+# violin plot per treatment per cluster
+gglist <-  list()
+name <- "oxphos"
+for(clus in levels(oxphos_sig_obj$seurat_clusters)){
+  print(clus)
+  obj <- subset(oxphos_sig_obj, subset = seurat_clusters == clus)
+  p <- SignatureScore(obj, 'SigUint') + ggtitle(obj@active.ident)
+  gglist[[(as.numeric(clus)+1)]] <- p
+}
+cowplot::plot_grid(plotlist = gglist, ncol = 4, nrow = 2) + 
+      ggtitle(name)
+ggsave(file = "Plots/T/oxphos_sig_per_cluster_treatment.png", dpi=300, width=16, height=10)
 
 ```
 
@@ -69,6 +84,25 @@ ggsave(file = "Plots/T/glycolysis_sig_per_cluster_treatment.png", dpi=300, width
 
 ```{r}
 il2_sig <- c("Shc1","Stat5b","Lck","Stat5a","Jak3","Syk","Csnk2a1","Elk1","Grb2","Hras","Il2","Il2ra","Il2rb","Map2k1","Sos1","Csnk2a2","Fos","Jun","Mapk3","Il2rg","Mapk8","Raf1","Jak1")
+il2_sig <- make_signature(Tcells, il2,idents = c("D","A","B"), format_flag = TRUE)
+il2_sig_obj <- il2_sig[[1]]
+il2_sig[[3]]
+ggsave("Plots/T/il2_sig_box.png", width = 20, height = 20, units = "cm")
+il2_sig[[2]]
+ggsave("Plots/T/il2_sig_tsne.png", width = 20, height = 20, units = "cm")
+
+# violin plot per treatment per cluster
+gglist <-  list()
+name <- "il2"
+for(clus in levels(il2_sig_obj$seurat_clusters)){
+  print(clus)
+  obj <- subset(il2_sig_obj, subset = seurat_clusters == clus)
+  p <- SignatureScore(obj, 'SigUint') + ggtitle(obj@active.ident)
+  gglist[[(as.numeric(clus)+1)]] <- p
+}
+cowplot::plot_grid(plotlist = gglist, ncol = 4, nrow = 2) + 
+      ggtitle(name)
+ggsave(file = "Plots/T/il2_sig_per_cluster_treatment.png", dpi=300, width=16, height=10)
 
 
 
@@ -77,6 +111,25 @@ il2_sig <- c("Shc1","Stat5b","Lck","Stat5a","Jak3","Syk","Csnk2a1","Elk1","Grb2"
 
 ```{r}
 il2_receptor <- c("Bad", "Bcl2", "Cbl", "Cflar", "Crkl", "E2f1", "Fas", "Fasl",	"Fos", "Grb2", "Hras", "Ikzf3", "Il2ra", "Il2rb", "Il2rg", "Irs1", "Jak1", "Jak3", "Mapk1", "Mapk3", "Myc", "Nmi", "Pik3ca", "Pik3cg", "Pik3r1", "Ptpn6", "Raf1", "Rps6kb1", "Shc1", "Socs1", "Socs3", "Sos1", "Stat5a", "Stat5b", "Syk")
+il2_receptor_sig <- make_signature(Tcells, il2_receptor,idents = c("D","A","B"), format_flag = TRUE)
+il2_receptor_sig_obj <- il2_receptor_sig[[1]]
+il2_receptor_sig[[3]]
+ggsave("Plots/T/il2_receptor_sig_box.png", width = 20, height = 20, units = "cm")
+il2_receptor_sig[[2]]
+ggsave("Plots/T/il2_receptor_sig_tsne.png", width = 20, height = 20, units = "cm")
+
+# violin plot per treatment per cluster
+gglist <-  list()
+name <- "il2_receptor"
+for(clus in levels(il2_receptor_sig_obj$seurat_clusters)){
+  print(clus)
+  obj <- subset(il2_receptor_sig_obj, subset = seurat_clusters == clus)
+  p <- SignatureScore(obj, 'SigUint') + ggtitle(obj@active.ident)
+  gglist[[(as.numeric(clus)+1)]] <- p
+}
+cowplot::plot_grid(plotlist = gglist, ncol = 4, nrow = 2) + 
+      ggtitle(name)
+ggsave(file = "Plots/T/il2_receptor_sig_per_cluster_treatment.png", dpi=300, width=16, height=10)
 
 
 ```

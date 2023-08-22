@@ -68,13 +68,14 @@ saveRDS(myeloid, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq
 #######################################################################################################################
 ## 4. Cluster the cells
 ```{r message=FALSE, warning=FALSE, cache= TRUE}
-myeloid = FindNeighbors(myeloid, dims = 1:14)
-myeloid = FindClusters(myeloid, resolution = 0.4)
+myeloid = FindNeighbors(myeloid, dims = 1:13)
+myeloid = FindClusters(myeloid, resolution = 0.3)
 myeloid = RunTSNE(myeloid, dims = 1:14, verbose = F)
-DimPlot(myeloid, reduction = "tsne")
+DimPlot(myeloid, reduction = "tsne", label=T)
 ```
+Run non-linear dimensional reduction (UMAP/tSNE) ?
 
-## 5. Run non-linear dimensional reduction (UMAP/tSNE)
+## 5. check filter
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=6, fig.height= 6}
 # delete cluster 5 : T cells
 FeaturePlot(myeloid, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=2)

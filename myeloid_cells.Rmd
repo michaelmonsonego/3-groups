@@ -185,14 +185,8 @@ ggsave(file = "plots/myeloid/Cxcl10_vln.png", dpi=300, width=6, height=6)
 #grep("^Ccl16",rownames(myeloid_cells@assays$RNA@counts),value = TRUE)
 ```
 
-### trying stuff
+### clusters identification
 ```{r}
-FeaturePlot(myeloid_cells, features =c("Faap20", 'Fcho1', 'Nab1', 'Ccdc88b', 'Cmtr1', 'Tnfrsf21', 'Gpcpd1'), order=TRUE,pt.size=1, reduction="tsne", ncol=3)
-
-c("Faap20", 'Fcho1', 'Nab1', 'Ccdc88b', 'Cmtr1', 'Tnfrsf21', 'Gpcpd1')
-
-FeaturePlot(myeloid_cells, features =c("Chil3", "Cxcl10", "Vcan", "Ccr5", "Il18","Thbs1","Plcb1","Cacna1d","Pnp"), order=TRUE,pt.size=1, reduction="tsne", ncol=3)
-
 cluster0_list = list(c("Cxcl10", "Vcan", "Il18","Plcb1","Cacna1d"))
 myeloid_cells = AddModuleScore(object = myeloid_cells, features = cluster0_list, name = "Cxcl10")
 a <- FeaturePlot(object = myeloid_cells, features = "Cxcl101", reduction = "tsne", cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "0_ Cxcl10+ myeloid cells", subtitle = "(Cxcl10, Vcan, Il18,Plcb1,Cacna1d)")+ theme(plot.subtitle = element_text(hjust = 0.5))
@@ -210,67 +204,53 @@ ggsave(file = "plots/myeloid/cluster2_M1-like.png", dpi=300, width=5, height=5)
 
 cluster3_list = list(c("Ccl5", "Fscn1", "Ccr7", "Cd80", "Cd83"))
 myeloid_cells = AddModuleScore(object = myeloid_cells, features = cluster3_list, name = "cDC1")
-d <- FeaturePlot(object = myeloid_cells, features = "cDC11", reduction = "tsne",cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "3_ cDC-1", subtitle = "Ccl5, Fscn1, Ccr7,Cd80, Cd83")+ theme(plot.subtitle = element_text(hjust = 0.5))
+d <- FeaturePlot(object = myeloid_cells, features = "cDC11", reduction = "tsne",cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "3_mature cDC-1", subtitle = "Ccl5, Fscn1, Ccr7,Cd80, Cd83")+ theme(plot.subtitle = element_text(hjust = 0.5))
 ggsave(file = "plots/myeloid/cluster3_cDC-1.png", dpi=300, width=5, height=5)
 
 cluster4_list = list(c("Cd209a", "Batf3", "Cxcl9", "Ccr2","Ifitm1"))
 myeloid_cells = AddModuleScore(object = myeloid_cells, features = cluster4_list, name = "cDC2")
 e <- FeaturePlot(object = myeloid_cells, features = "cDC21", reduction = "tsne", cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "4_ cDC-2", subtitle = "(Cd209a, Batf3, Cxcl9, Ccr2, Ifitm1)")+ theme(plot.subtitle = element_text(hjust = 0.5))
-ggsave(file = "plots/myeloid/cluster4_cDC-1.png", dpi=300, width=5, height=5)
+ggsave(file = "plots/myeloid/cluster4_cDC-2.png", dpi=300, width=5, height=5)
 
-cluster5_list = list(c("Cd19", "Ighm", "Cd79a", 'Ebf1'))
-myeloid_cells = AddModuleScore(object = myeloid_cells, features = cluster5_list, name = "B_cells")
-f <- FeaturePlot(object = myeloid_cells, features = "B_cells1", reduction = "tsne",cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "5_ B cells", subtitle = "Cd19, Ighm, Cd79a, Ebf1")+ theme(plot.subtitle = element_text(hjust = 0.5))
-ggsave(file = "plots/myeloid/cluster5_B cells.png", dpi=300, width=5, height=5)
+cluster5_list = list(c("S100a9", "Ccl3", 'S100a8', "Retnlg"))
+myeloid_cells = AddModuleScore(object = myeloid_cells, features = cluster5_list, name = "neutrophils")
+f <- FeaturePlot(object = myeloid_cells, features = "neutrophils1", reduction = "tsne", cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "5_ Neutrophils", subtitle = "S100a9, Ccl3, S100a8, Retnlg")+ theme(plot.subtitle = element_text(hjust = 0.5))
+ggsave(file = "plots/myeloid/cluster5_neutrophils.png", dpi=300, width=5, height=5)
 
-cluster6_list = list(c("S100a9", "Ccl3", 'S100a8', "Retnlg"))
-myeloid_cells = AddModuleScore(object = myeloid_cells, features = cluster6_list, name = "neutrophils")
-g <- FeaturePlot(object = myeloid_cells, features = "neutrophils1", reduction = "tsne", cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "6_ Neutrophils", subtitle = "S100a9, Ccl3, S100a8, Retnlg")+ theme(plot.subtitle = element_text(hjust = 0.5))
-ggsave(file = "plots/myeloid/cluster6_neutrophils.png", dpi=300, width=5, height=5)
+cluster6_list = list(c("Cd19", "Ighm", "Cd79a", 'Ebf1'))
+myeloid_cells = AddModuleScore(object = myeloid_cells, features = cluster6_list, name = "B_cells")
+g <- FeaturePlot(object = myeloid_cells, features = "B_cells1", reduction = "tsne",cols=c("grey","grey","#e46467", "#b33336", "#A73033"))+labs(title = "6_ B cells", subtitle = "Cd19, Ighm, Cd79a, Ebf1")+ theme(plot.subtitle = element_text(hjust = 0.5))
+ggsave(file = "plots/myeloid/cluster6_B cells.png", dpi=300, width=5, height=5)
+
 
 (a|b|c|d)/
   (e|f|g|plot_spacer())
 ggsave(file = "plots/myeloid/myeloid_features.png", dpi=300, width=20, height=10)
-
-
-
-FeaturePlot(myeloid_cells, features =c("Batf3", 'Ccr2', 'Cd11b', 'Cd1a', 'Cmtr1', 'Cd1c', 'Cd24a', 'Cd70', 'Cd80', 'Cd83', 'Cd86', 'Csfr2', 'Cxcl9',"Cxcr3", 'Cd209a'), order=TRUE,pt.size=1, reduction="tsne", ncol=3)
-
 ```
 
-dcsign
-flt3
-h2-dmb2
-id2
-il12
-irf4
-mgl2
-notxh2
-ox40l
-sirpa
-zbtb46
-CLEC10A
-CD1C
-BHLHE40
 
-#e46467'
+## 3. Annotation
+```{r eval=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE}
+myeloid_cells@active.ident = myeloid_cells$seurat_clusters
+DimPlot(myeloid_cells, reduction = "tsne", label=T, pt.size=0.5, label.size = 6)
+ggsave(file = "Plots/myeloid/annotated tsne - no names.png",path= "plots", dpi=300, width=6, height=6)
 
-Gstt4
-M22Rik
-Tnfrsf21
-Nfxl1
-Pim2
-Map3k14
-Cxcl16
-Kif13b
-Slc6a13
-Scamp1
-Tpd52
-Ssh1
+myeloid_cells@active.ident = myeloid_cells$seurat_clusters
+myeloid_cells = RenameIdents(myeloid_cells, 
+                       "0" = "0_Cxcl10+ Myeloid cells", 
+                       "1" = "1_M2-like", 
+                       "2" = "2_M1-like", 
+                       "3" = "3_mature cDC-1", 
+                       "4" = "4_cDC-2", 
+                       "5" = "5_Neutrophils",
+                       "6" = "6_B cells")
+DimPlot(myeloid_cells, reduction = "tsne", label=TRUE, pt.size=0.5, label.size = 4)
+ggsave(file = "Plots/myeloid/annotated tsne - with names.png", dpi=300, width=12, height=6)
 
+saveRDS(myeloid_cells, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/Teva_myeloid_object.rds")
+```
 
-
-## 3. Target markers
+## 4. Target markers
 ```{r fig.height=x1*1, fig.width=12, echo=FALSE}
 TargetMarkers <- c('Il2ra','Il2rb','Pdcd1')
 FeaturePlot(myeloid_cells, features = TargetMarkers, label= T,pt.size = 1.2 ,ncol = 2, order = T, reduction = 'tsne')
@@ -316,26 +296,7 @@ ggsave(file = "plots/myeloid/Vln_PD-L1.png", dpi=300, width=10, height=10, limit
 ```
 
 
-## 4. Annotation
-```{r eval=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE}
-myeloid_cells@active.ident = myeloid_cells$seurat_clusters
-DimPlot(myeloid_cells, reduction = "tsne", label=T, pt.size=0.5, label.size = 6)
-ggsave(file = "Plots/myeloid/annotated tsne - no names.png",path= "plots", dpi=300, width=6, height=6)
 
-myeloid_cells@active.ident = myeloid_cells$seurat_clusters
-myeloid_cells = RenameIdents(myeloid_cells, 
-                       "0" = "0_C1qa+ Myeloid cells", 
-                       "1" = "1_C1q", 
-                       "2" = "2_yet", 
-                       "3" = "3_mature DCs", 
-                       "4" = "4_cDC-2", 
-                       "5" = "5_Neutrophils",
-                       "6" = "6_B cells")
-DimPlot(myeloid_cells, reduction = "tsne", label=TRUE, pt.size=0.5, label.size = 4)
-ggsave(file = "Plots/myeloid/annotated tsne - with names.png", dpi=300, width=12, height=6)
-
-saveRDS(myeloid_cells, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/Teva_myeloid_object.rds")
-```
 
 ## 5. Contribution of each group
 ```{r eval=FALSE, fig.height=10, fig.width=15, message=FALSE, warning=FALSE, cache=TRUE, include=FALSE}

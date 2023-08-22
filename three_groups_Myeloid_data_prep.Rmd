@@ -77,8 +77,9 @@ Run non-linear dimensional reduction (UMAP/tSNE) ?
 
 ## 5. check filter
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=6, fig.height= 6}
-# delete cluster 5 : T cells
-FeaturePlot(myeloid, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=2)
+# delete cluster 5 : T cells(CD8)
+FeaturePlot(myeloid, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE, label=T, pt.size=1, reduction="tsne", ncol=2)
+ggsave(file = "Plots/Myeloid/T cells contamination check positive.png", dpi=300, width=10, height=10)
 myeloid <- subset(myeloid, idents= c(0,1,2,3,4,6,7))
 
 # run analysis again
@@ -90,25 +91,27 @@ myeloid = RunPCA(myeloid, features = VariableFeatures(object = myeloid))
 DimPlot(myeloid, reduction = "pca", group.by="Treatment", cols = c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=1.1)
 ElbowPlot(myeloid, ndims = 40) + theme_classic()
 ggsave(file = "Plots/Myeloid/Elbow plot_myeloid_second.png", dpi=300, width=10, height=10)
-saveRDS(myeloid, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/Teva_myeloid_0_before_dim_object_2.rds")
+saveRDS(myeloid, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_myeloid_0_before_dim_object_2.rds")
+########################################################################################################################
 # dim+res choosing
-myeloid = FindNeighbors(myeloid, dims = 1:12)
-myeloid = FindClusters(myeloid, resolution = 0.25)
-myeloid = RunTSNE(myeloid, dims = 1:12, verbose = F)
+myeloid = FindNeighbors(myeloid, dims = 1:13)
+myeloid = FindClusters(myeloid, resolution = 0.3)
+myeloid = RunTSNE(myeloid, dims = 1:13, verbose = F)
 DimPlot(myeloid, reduction = "tsne", label= TRUE, pt.size=0.5)
-ggsave(file = "Plots/Myeloid/myeloid/tSNE.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/Myeloid/tSNE.png", dpi=300, width=12, height=12)
 
 TSNEPlot(myeloid, group.by ="Treatment", cols= c("#CFBAE1", "#5C7D9D","#A4DEF9"), pt.size=0.8)
-ggsave(file = "Plots/Myeloid/myeloid/tSNE - by treatment.png", dpi=300, width=12, height=12)
+ggsave(file = "Plots/Myeloid/tSNE - by treatment.png", dpi=300, width=12, height=12)
 
-table(myeloid$orig.ident)["A"] #  1306 
-table(myeloid$orig.ident)["D"] #  2980 
+table(myeloid$orig.ident)["A"] #  1310
+table(myeloid$orig.ident)["D"] #  2986 
+table(myeloid$orig.ident)["B"] #  1050
 ```
 
 ### make sure no T cells
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=16, fig.height= 18}
 FeaturePlot(myeloid, features = c("Ptprc", "Cd3e", "Cd8a", "Cd4", "Foxp3"), order=TRUE,pt.size=1, reduction="tsne", ncol=2)
-ggsave(file = "Plots/Myeloid/myeloid/T_check.png", dpi=300, width=30, height=20)
+ggsave(file = "Plots/Myeloid/T_check.png", dpi=300, width=30, height=20)
 ```
 
 
@@ -123,7 +126,7 @@ Top50Markers_myeloid =
   as.data.frame %>% 
   arrange(cluster,-avg_log2FC)
 
-write_csv(Top50Markers_myeloid, "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Excels/memory_myeloid_DE_genes.csv")
+write_csv(Top50Markers_myeloid, "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Excels/memory_myeloid_DE_genes.csv")
 
 Top50Markers_myeloid$avg_log2FC <- Top50Markers_myeloid$avg_log2FC %>% round(2)
 Top50Markers_myeloid <- Top50Markers_myeloid[,c("cluster","gene", "avg_log2FC", "p_val")] 
@@ -134,7 +137,7 @@ myeloid.markers %>%
     group_by(cluster) %>%
     top_n(n = 10, wt = avg_log2FC) -> top10_T
 DoHeatmap(myeloid, features = top10_T$gene) + NoLegend() + scale_fill_gradientn(colors = c("blue", "white", "red"))
-ggsave(file = "Plots/Myeloid/myeloid/myeloid cells markers - heatmap.png", dpi=300, width=12, height=20)
+ggsave(file = "Plots/Myeloid/myeloid cells markers - heatmap.png", dpi=300, width=12, height=20)
 
-saveRDS(myeloid, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/Teva_myeloid_intermediate_object.rds")
+saveRDS(myeloid, file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_myeloid_intermediate_object.rds")
 ```

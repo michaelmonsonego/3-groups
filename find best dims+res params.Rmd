@@ -18,7 +18,7 @@ editor_options:
 ## 4. Cluster the cells (with correlation between dims parameter between RUNTSNE and findNeighbors)
 ```{r message=FALSE, warning=FALSE, cache= TRUE}
 
-dims_res = readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_myeloid_0_before_dim_object.rds")
+dims_res = readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/Teva_myeloid_0_before_dim_object_2.rds")
 
 setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups")
 
@@ -60,6 +60,7 @@ f <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
 ggsave(file = "Plots/dims_res_test/three_groups_myeloid_res_tests_dim_10.png", dpi=300, width=12, height=12)
 
 
+
 # dims = 13
 # res = 0.25 : 0.5
 dims_res = FindNeighbors(dims_res, dims = 1:13)
@@ -74,6 +75,9 @@ dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
 b <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
   ggtitle('res=0.3')
 
+FeaturePlot(dims_res, features = c("Cd11b","Cd11c","Apoe","Cd16","Mac1","S100a8","Ccr7","Fcgr3","Cxcl16","Prf1"), order=TRUE,pt.size=1, label= T, reduction="tsne", ncol=4)
+#M# looking for a reason to choose res=0.4 instead of res=0.3, checking if the cluster added separates important groups of cells or no. the result is no.
+
 dims_res = FindClusters(dims_res, resolution = 0.35)
 dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
 c <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
@@ -83,6 +87,8 @@ dims_res = FindClusters(dims_res, resolution = 0.4)
 dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)
 d <- DimPlot(dims_res, reduction = "tsne", label= TRUE, pt.size=0.5)+
   ggtitle('res=0.4')
+
+FeaturePlot(dims_res, features = c("Cd11b","Cd11c","Apoe","Cd16","Mac1","S100a8","Ccr7","Fcgr3","Cxcl16","Prf1"), order=TRUE,pt.size=1, label= T, reduction="tsne", ncol=3)
 
 dims_res = FindClusters(dims_res, resolution = 0.45)
 dims_res = RunTSNE(dims_res, dims = 1:13, verbose = F)

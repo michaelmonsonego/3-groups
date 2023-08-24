@@ -84,7 +84,7 @@ ggsave(file = "Plots/T/glycolysis_sig_per_cluster_treatment.png", dpi=300, width
 
 ```{r}
 il2 <- c("Shc1","Stat5b","Lck","Stat5a","Jak3","Syk","Csnk2a1","Elk1","Grb2","Hras","Il2","Il2ra","Il2rb","Map2k1","Sos1","Csnk2a2","Fos","Jun","Mapk3","Il2rg","Mapk8","Raf1","Jak1")
-il2_sig <- make_signature(Tcells, il2,idents = c("D","A","B"), format_flag = TRUE)
+il2_sig <- make_signature(Tcells, il2,idents = c("A","B","D"), format_flag = TRUE)
 il2_sig_obj <- il2_sig[[1]]
 il2_sig[[3]]
 ggsave("Plots/T/il2_sig_box.png", width = 20, height = 20, units = "cm")

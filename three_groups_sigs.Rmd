@@ -139,6 +139,28 @@ ggsave(file = "Plots/T/il2_receptor_sig_per_cluster_treatment.png", dpi=300, wid
 
 ```
 
+###
+one object with all signatures
+```{r}
+CD3subset <- readRDS(file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/Teva_T_intermediate_object.rds"))
+
+levels(CD3subset$Sample) <- c('Saline','αPD1(RMP1-30)-IL2')
+
+signatures <- c('Tcells_Cytotoxicity', 'Tcell_chemotaxis','Tcell_Integrin_activation',
+                'INTERLEUKIN_2_RECEPTOR_BINDING','Tcells_Co_Stimulatory','Tcells_Co_Inhibitory',
+                'Tcells_Cytotoxicity','NF_KAPPAB_SIGNALING', 'Tregs_suppression')
+
+CD3subset.sig <- CD3subset
+
+for (name in signatures){
+    # if(name != 'Tcells_Cytotoxicity' & name != 'Tcell_chemotaxis'){next}
+    print(name)
+    CD3subset.sig <- make_signature(CD3subset.sig, name = name, up = get(name),title = name)[[1]]
+    CD3subset.sig[[name]] = (CD3subset.sig[[name]]-min(CD3subset.sig[[name]]))/
+      (max(CD3subset.sig[[name]])-min(CD3subset.sig[[name]]))
+}
+
+saveRDS(CD3subset.sig,"Objects//CD3subset.sig.RDS")
 
 
 

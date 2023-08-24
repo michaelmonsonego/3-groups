@@ -59,7 +59,8 @@ ggsave(file = "Plots/T/oxphos_sig_per_cluster_treatment.png", dpi=300, width=16,
 
 ```{r}
 glycolysis <- c("Pfkm", 'Psmc4', 'Nup85', 'Ppha1', 'Cdk1', "Cenpa", "Gpi", "Nup155", "Gpc1", "Hk2","Aldoc","Pfkl","Nup85","Nup155", "Tpi1","Adpgk","Pfkfb1","Pfkfb4","Hk3", "Pfkfb2","Pfkfb3","Nup35","Ndc1","Gnpda2", "Aldoa","Pgm2l1","Pkm","Nup93","Pfkm","Nup54",'Nup37', 'Gpi1', 'Aaas',"Nup205",'Bpgm','Nup133',"Nup43","Nup88",'Nupl2','Nup160',"Gnpda1","Nup188","Nup107","Pom121","Gapdh","Eno1b","Eno3","Gapdhs","Pgk1","Eno1",'Nup98',"Seh1l","Nup62","Aldoa")
-glycolysis_sig <- make_signature(Tcells, glycolysis,idents = c("D","A","B"), format_flag = TRUE)
+#M# here the results are for c("D", "A", "B") even though idents dont show B(it creates an error for some reason)
+glycolysis_sig <- make_signature(Tcells, glycolysis,idents = c("D","A"), format_flag = TRUE)
 glycolysis_sig_obj <- glycolysis_sig[[1]]
 glycolysis_sig[[3]]
 ggsave("Plots/T/glycolysis_sig_box.png", width = 20, height = 20, units = "cm")

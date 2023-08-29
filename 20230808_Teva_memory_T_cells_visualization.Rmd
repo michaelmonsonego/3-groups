@@ -74,6 +74,60 @@ ggsave(file = "Plots/T/features_gdT T17.png", dpi=300, width=20, height=20)
 # activation / exhaustion markers
 FeaturePlot(T_cells, features = c("Pdcd1", "Havcr2", "Lag3", "Tigit", "Tnfrsf4", "Tnfrsf9", "Icos", "Ctla4", "Klrd1", "Irf8", "Klrc1", "Tox"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
 ggsave(file = "Plots/T/features_T_activation.png", dpi=300, width=30, height=40)
+
+
+VlnPlot(T_cells, features = c('Havcr2'), flip= TRUE, split.by = "Treatment",pt.size = 0)+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())+
+   scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+
+geom_boxplot(alpha=0.3,show.legend = FALSE, outlier.shape = NA)
+ggsave(file = "Plots/T/Havcr2-3.png", dpi=300, width=8, height=6)
+
+ateno_saline <- subset(T_cells, subset = Treatment == c("Saline", "αPD1-Il2"))
+table(ateno_saline$Treatment) #M# making sure
+
+VlnPlot(ateno_saline, features = c('Havcr2'), flip= TRUE, split.by = "Treatment",pt.size = 0)+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())+
+   scale_fill_manual(values= c("#CFBAE1","#A4DEF9"))+
+geom_boxplot(alpha=0.3,show.legend = FALSE, outlier.shape = NA)
+ggsave(file = "Plots/T/Havcr2-ateno_saline.png", dpi=300, width=8, height=6)
+
+###
+library(ggpubr)
+# sub_t1 <- subset(ateno_saline, ident = as.character(cluster_id), subset = Treatment == "Saline")
+# sub_t2 <- subset(ateno_saline, ident = as.character(cluster_id), subset = Treatment == "αPD1-Il2")
+# expression_groupA <- sub_t1@assays$RNA@counts['Havcr2', ]
+# expression_groupB <- sub_t2@assays$RNA@counts['Havcr2', ]
+# ttest_result <- t.test(expression_groupA, expression_groupB)
+
+p_values <- c()
+for(cluster_id in levels(ateno_saline@active.ident)) {
+  cluster_cells1 <- subset(ateno_saline, ident = as.character(cluster_id), subset = Treatment == "Saline")
+  cluster_cells2 <- subset(ateno_saline, ident = as.character(cluster_id), subset = Treatment == "αPD1-Il2")
+  expression_groupA <- cluster_cells1@assays$RNA@counts['Havcr2', ]
+  expression_groupB <- cluster_cells2@assays$RNA@counts['Havcr2', ]
+  p_values <- c(p_values, ttest_result$p.value)
+}
+
+p_values_bonferroni <- p.adjust(p_values, method = "bonferroni")
+
+p_value_asterisks_bonferroni <- ifelse(p_values_bonferroni < 0.001, "***",
+                                       ifelse(p_values_bonferroni < 0.01, "**",
+                                              ifelse(p_values_bonferroni < 0.05, "*", "")))
+
+x_levels <- seq(levels(ateno_saline@active.ident))
+
+VlnPlot(ateno_saline, features = c('Havcr2'), flip= TRUE, split.by = "Treatment",pt.size = 0)+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())+
+   scale_fill_manual(values= c("#CFBAE1","#A4DEF9"))+
+   geom_boxplot(alpha=0.3,show.legend = FALSE, outlier.shape = NA)+
+   annotate("text", x = x_levels, y=1.1, label = p_value_asterisks_bonferroni, size = 6)
+ggsave(file = "Plots/T/Havcr2-ateno_saline_with_sig_test.png", dpi=300, width=8, height=6)
+
+
+
 ```
 
 
@@ -308,7 +362,6 @@ proportions$cluster = factor (proportions$cluster, levels=c("0_Effector CD8+", "
 
 ggplot(proportions, aes(x=cluster, y=prop, fill=Treatment))+
   geom_bar(stat="identity",position=position_dodge())+
-   scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+
     theme_classic()+
     labs(x="", y="% of total cells")+
     theme(legend.title=element_text(size=18),legend.text= element_text(size=14), 
@@ -345,6 +398,11 @@ ggsave(file = "Plots/T/features_T_glycolysis.png", dpi=300, width=30, height=30)
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height=6}
 VlnPlot(T_cells, features = c('Psmc4', 'Ppha1', 'Cdk1', "Cenpa", "Gpi"), stack=TRUE, flip= TRUE, split.by = "seurat_clusters")+theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
 ggsave(file = "Plots/T/Vln_T_glycolysis.png", dpi=300, width=15, height=10)
+
+VlnPlot(T_cells, features = c('Psmc4', 'Ppha1', 'Cdk1', "Cenpa", "Gpi"), stack=TRUE, flip= TRUE, split.by = "Treatment")+
+     scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+
+  theme_classic()+theme(axis.text.x = element_text(angle = 45, hjust=1), axis.title.x = element_blank())
+
 ```
 
 ```{r message=FALSE, warning=FALSE, cache= TRUE, fig.width=10, fig.height=5}

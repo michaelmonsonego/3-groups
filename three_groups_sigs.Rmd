@@ -85,7 +85,7 @@ ggsave(file = "Plots/T/glycolysis_sig_per_cluster_treatment.png", dpi=300, width
 
 ```{r}
 il2 <- c("Shc1","Stat5b","Lck","Stat5a","Jak3","Syk","Csnk2a1","Elk1","Grb2","Hras","Il2","Il2ra","Il2rb","Map2k1","Sos1","Csnk2a2","Fos","Jun","Mapk3","Il2rg","Mapk8","Raf1","Jak1")
-il2_sig <- make_signature(Tcells, il2,idents = c("A","B","D"), format_flag = TRUE)
+il2_sig <- make_signature(Tcells, il2,idents = c("A","D"), format_flag = TRUE)
 il2_sig_obj <- il2_sig[[1]]
 il2_sig[[3]]
 ggsave("Plots/T/il2_sig_box.png", width = 20, height = 20, units = "cm")
@@ -135,16 +135,14 @@ ggsave(file = "Plots/T/il2_receptor_sig_per_cluster_treatment.png", dpi=300, wid
 
 ```
 
-```{r}
-
-```
 
 ###
 one object with all signatures
 ```{r}
-CD3subset <- readRDS(file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/Teva_T_intermediate_object.rds"))
+CD3subset <- readRDS(file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/T cells_object.rds")
+table(CD3subset$Treatment)
 
-levels(CD3subset$Sample) <- c('Saline','αPD1(RMP1-30)-IL2')
+levels(CD3subset$Treatment) <- c('Saline',"αPD1-Il2")
 
 signatures <- c('Tcells_Cytotoxicity', 'Tcell_chemotaxis','Tcell_Integrin_activation',
                 'INTERLEUKIN_2_RECEPTOR_BINDING','Tcells_Co_Stimulatory','Tcells_Co_Inhibitory',
@@ -157,15 +155,36 @@ for (name in signatures){
     print(name)
     CD3subset.sig <- make_signature(CD3subset.sig, name = name, up = get(name),title = name)[[1]]
     CD3subset.sig[[name]] = (CD3subset.sig[[name]]-min(CD3subset.sig[[name]]))/
-      (max(CD3subset.sig[[name]])-min(CD3subset.sig[[name]]))
+      (max(CD3subset.sig[[name]])-min(CD3subset.sig[[name]])) #M# what is this? why is it good?
 }
 
-saveRDS(CD3subset.sig,"Objects//CD3subset.sig.RDS")
+saveRDS(CD3subset.sig,"//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/CD3subset_sig.rds")
+
+
+
+```
+
+```{r}
+library(pheatmap)
+
+# Data 
+set.seed(8)
+m <- matrix(rnorm(200), 10, 10)
+colnames(m) <- paste("Col", 1:10)
+rownames(m) <- paste("Row", 1:10)
+
+# Heat map
+pheatmap(m)
+
+
+source('D:/git_check/3-groups/signature_genes.rmd')
 
 
 
 
 
+
+```
 
 
 

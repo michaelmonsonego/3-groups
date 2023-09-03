@@ -1,4 +1,5 @@
 
+setwd('D:/git_check/3-groups')
 
 Antigen_processing <- (c("H2-D1", "H2-Q7", "H2-K1", "H2-T23","H2-Q4","Tap1","Tapbp","B2m", "Psmb8", "Psme1",
                          "Psmb9", "Calr", "Psmb10", "Ncf1", "Fcer1g"))

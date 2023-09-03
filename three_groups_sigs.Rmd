@@ -23,11 +23,16 @@ library(matlab)
 library(fgsea)
 library(stringr)
 library(reticulate)
+library(pheatmap)
+library(ggpubr)
+
   
 memory.limit(10^14)
 setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups")
 use_python((r"(C:\Users\user\AppData\Local\Programs\Python\Python311)"), required = TRUE)
 source("//asafmadilabfs/asafmadilab$/michael/Madi lab/Signature_propo/signature_utils.R")
+source('D:/git_check/3-groups/sig_genes.R')
+setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups")
 Tcells <- readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/T cells_object.rds")
 ```
 
@@ -139,26 +144,115 @@ ggsave(file = "Plots/T/il2_receptor_sig_per_cluster_treatment.png", dpi=300, wid
 ###
 one object with all signatures
 ```{r}
+
 CD3subset <- readRDS(file="//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/ateno+saline/Objects/T cells_object.rds")
 table(CD3subset$Treatment)
 
-levels(CD3subset$Treatment) <- c('Saline',"αPD1-Il2")
-
 signatures <- c('Tcells_Cytotoxicity', 'Tcell_chemotaxis','Tcell_Integrin_activation',
                 'INTERLEUKIN_2_RECEPTOR_BINDING','Tcells_Co_Stimulatory','Tcells_Co_Inhibitory',
-                'Tcells_Cytotoxicity','NF_KAPPAB_SIGNALING', 'Tregs_suppression')
+                'NF_KAPPAB_SIGNALING', 'Tregs_suppression')
 
 CD3subset.sig <- CD3subset
+
+
+#M# just checking how this works out: (whats 'name = ' ?, also : up -> up_sig)
+check_CD3subset.sig <- CD3subset.sig
+check_CD3subset.sig <- make_signature(check_CD3subset.sig, Tcells_Cytotoxicity, idents = c("A","D"), format_flag = TRUE, title = 'Tcells_Cytotoxicity')
+check_CD3subset.sig_ob <- check_CD3subset.sig[[1]]
+check_CD3subset.sig_ob[['Tcells_Cytotoxicity']] = (check_CD3subset.sig_ob[['Tcells_Cytotoxicity']]-min(check_CD3subset.sig_ob[['Tcells_Cytotoxicity']]))/
+      (max(check_CD3subset.sig_ob[['Tcells_Cytotoxicity']])-min(check_CD3subset.sig_ob[['Tcells_Cytotoxicity']]))
+#M# end of check
 
 for (name in signatures){
     # if(name != 'Tcells_Cytotoxicity' & name != 'Tcell_chemotaxis'){next}
     print(name)
-    CD3subset.sig <- make_signature(CD3subset.sig, name = name, up = get(name),title = name)[[1]]
+    CD3subset.sig <- make_signature(CD3subset.sig, get(name), idents = c("A","D"), format_flag = TRUE, title = name)[[1]]
     CD3subset.sig[[name]] = (CD3subset.sig[[name]]-min(CD3subset.sig[[name]]))/
-      (max(CD3subset.sig[[name]])-min(CD3subset.sig[[name]])) #M# what is this? why is it good?
+      (max(CD3subset.sig[[name]])-min(CD3subset.sig[[name]])) #M# feature normaliztion (0-1)
 }
 
 saveRDS(CD3subset.sig,"//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/CD3subset_sig.rds")
+
+CD3subset.sig <- readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/CD3subset_sig.rds")
+
+
+
+levels(CD3subset.sig$Treatment)<- c('Saline',"αPD1-Il2")
+CD3subset.sig$cell.type <- paste0(CD3subset.sig@active.ident,"_", CD3subset.sig$Treatment)
+levels(CD3subset.sig@active.ident) 
+CD3subset.sig$cell.type <- factor(CD3subset.sig$cell.type,
+                                  levels = c("0_CD8+ T cells memory differentiation_Saline",
+                                             "0_CD8+ T cells memory differentiation_αPD1-Il2",
+                                            "1_activated CD8+ T cells_Saline",
+                                            "1_activated CD8+ T cells_αPD1-Il2",
+                                            "2_effector memory-like CD8 T cells_Saline",
+                                            "2_effector memory-like CD8 T cells_αPD1-Il2",
+                                            "3_cytotoxic CD8+ T cells_Saline",
+                                            "3_cytotoxic CD8+ T cells_αPD1-Il2",
+                                            "4_naive/memory CD8+ T cells_Saline",
+                                            "4_naive/memory CD8+ T cells_αPD1-Il2",
+                                            "5_CD4+CD8 naive/memory_Saline",
+                                            "5_CD4+CD8 naive/memory_αPD1-Il2",
+                                            "6_proliferating CD8+ T cells_Saline",
+                                            "6_proliferating CD8+ T cells_αPD1-Il2",
+                                            "7_Tregs_Saline",
+                                            "7_Tregs_αPD1-Il2"))
+Idents(CD3subset.sig) <- 'cell.type' #M# what does this do?
+counts <- CD3subset.sig[[signatures]]
+CD3subset.sig[['sig']] <- CreateAssayObject(data = t(x = FetchData(object = CD3subset.sig, 
+                                                                   vars = signatures)))
+signatures1 <- gsub("_", "-", signatures)
+counts <- AverageExpression(CD3subset.sig, assays = 'sig',slot = 'data', features = signatures1)[[1]]
+
+# column annotation
+annot_col = data.frame(Cluster = factor(rep(c("0_CD8+ T cells memory differentiation", 
+                                              "1_activated CD8+ T cells",
+                                          "2_effector memory-like CD8 T cells","3_cytotoxic CD8+ T cell",
+                                          "4_naive/memory CD8+ T cells","5_CD4+CD8 naive/memory","6_proliferating CD8+ T cells",
+                                          '7_Tregs'),
+                                          c(2,2,2,2,2,2,2,2))),
+                       Treatment = factor(rep(c("Saline","αPD1-Il2"),8)))
+row.names(annot_col) <- colnames(counts) 
+levels(annot_col$Treatment) = c("αPD1-Il2","Saline")
+
+# colors
+annot_colors <- c('#55a0fb','#ff8000')
+annot_colors_2 <- viridis_pal(option = "D")(8) 
+names(annot_colors) <- c("Saline","αPD1-Il2")
+names(annot_colors_2) <- c("0_CD8+ T cells memory differentiation", 
+                                              "1_activated CD8+ T cells",
+                                          "2_effector memory-like CD8 T cells","3_cytotoxic CD8+ T cell",
+                                          "4_naive/memory CD8+ T cells","5_CD4+CD8 naive/memory","6_proliferating CD8+ T cells",
+                                          '7_Tregs')
+annot_colors <- list(Treatment = annot_colors, Cluster = annot_colors_2)
+
+# test labels
+test_labels <- matrix('', 8, 16) 
+test_labels <- pval_table(CD3subset.sig, signatures, test_labels) #M# this function doesnt exist
+
+
+gaps_columns <- c(seq.int(length(levels(CD3subset.sig$Treatment)),
+                  length(levels(CD3subset.sig$Treatment))*length(levels(CD3subset.sig$seurat_clusters)),
+                  length(levels(CD3subset.sig$Treatment))))
+
+# count rownames
+counts <- counts %>% as.data.frame()
+rownames(counts) <- c('Tcells_Cytotoxicity', 'Tcell_chemotaxis','Tcell_Integrin_activation',
+                'INTERLEUKIN_2_RECEPTOR_BINDING','Tcells_Co_Stimulatory','Tcells_Co_Inhibitory',
+                'NF_KAPPAB_SIGNALING', 'Tregs_suppression')
+png('Plots/T/cd3_subset_sig.png',res =  300, width = 35, height = 20, units = "cm")
+pheatmap(counts, scale = 'row', 
+            color = colorRampPalette(rev(brewer.pal(n = 10, name = "RdBu")))(50),
+            cluster_rows = F, cluster_cols = F, 
+            annotation_col = annot_col,
+            annotation_colors = annot_colors,
+            gaps_col = gaps_columns,
+            angle_col = 90,
+            display_numbers = test_labels, 
+            fontsize_number = 25,labels_col = rep("",16)
+            )
+dev.off()
+
 
 
 
@@ -177,7 +271,6 @@ rownames(m) <- paste("Row", 1:10)
 pheatmap(m)
 
 
-source('D:/git_check/3-groups/signature_genes.rmd')
 
 
 
@@ -185,11 +278,6 @@ source('D:/git_check/3-groups/signature_genes.rmd')
 
 
 ```
-
-
-
-
-
 
 
 

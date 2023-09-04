@@ -25,6 +25,8 @@ library(stringr)
 library(reticulate)
 library(pheatmap)
 library(ggpubr)
+library(viridis)
+
 
   
 memory.limit(10^14)
@@ -228,7 +230,7 @@ annot_colors <- list(Treatment = annot_colors, Cluster = annot_colors_2)
 
 # test labels
 test_labels <- matrix('', 8, 16) 
-test_labels <- pval_table(CD3subset.sig, signatures, test_labels) #M# this function doesnt exist
+test_labels <- pval_table(CD3subset.sig, signatures, test_labels) 
 
 
 gaps_columns <- c(seq.int(length(levels(CD3subset.sig$Treatment)),
@@ -253,8 +255,47 @@ pheatmap(counts, scale = 'row',
             )
 dev.off()
 
+#M# 3.9 : place left : not as nice as tomers(something about the lines, i dont know why), and pval_table() doesnt work(need to dig in) 
+#M# try changing order of c("Saline","αPD1-Il2") to make saline on left in plot (?)
+#M#
 
 
+
+
+
+
+pval_table <- function(obj, sigs, test_labels){
+  test_labels <- matrix('', 8, 16) 
+  for(i in seq(length(sigs))){
+    print(i)
+    for (clus in levels(obj$seurat_clusters)){
+      print(clus)
+      
+      object <- subset(obj, subset = seurat_clusters == clus)
+      
+      # merged_treatment <- subset(object, subset = Sample == "Control")
+      merged_treatment <- subset(object, subset = Treatment == "Saline")
+      
+      # merged_control <- subset(object, subset = Sample == "Treatment")
+      merged_control <- subset(object, subset = Treatment == "\u03b1PD1-IL2")
+      
+      name <- sigs[i]
+      αPD1-Il2
+      pval <- unlist(wilcox.test(unlist(merged_control[[paste0(name)]]), 
+                                 unlist(merged_treatment[[paste0(name)]]), 
+                                 alternative = "two.sided"))[2]
+      
+      
+      label <- as.character(symnum(as.numeric(pval), corr = FALSE, na = FALSE,
+                                   cutpoints = c(0,0.0001, 0.001, 0.01, 0.05,1),
+                                   symbols = c('****',"***", "**", "*", "")))
+      
+      col <- as.numeric(clus)+1
+      test_labels[i,(2*col)] <- label
+  }
+  }
+  return(test_labels)
+}
 
 ```
 

@@ -1,0 +1,1034 @@
+---
+title: "Teva Attenukine Saline scRNAseq Analysis"
+author: "Tomer Weiss\n Madi Lab"
+date: "`r format(Sys.time(), '%d/%m/%y')`"
+output: 
+  html_document:
+    fig_crop: no
+    df_print: paged
+    toc: true
+    toc_float: true
+editor_options: 
+  chunk_output_type: console
+---
+
+
+Loading
+=====
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+install.packages("ggh4x")
+# library(Seurat)
+library(tidyverse)
+library(sleepwalk)
+library(gridExtra)
+library(plyr)
+library(gridExtra)
+library(ggpubr)
+library(scales)
+library(RColorBrewer)
+library(ggpubr)
+library(pheatmap)
+library(wesanderson)
+library(ggh4x)
+
+8482 -> saved.seed
+set.seed(saved.seed)
+
+memory.limit(10^13)
+# setwd("C:\\Users\\Tomer\\Desktop\\Master\\Projects\\Teva.3")
+setwd("//asafmadilabfs/asafmadilab$/michael/Tomer Teva/Teva.3")
+merged <- readRDS('Objects\\Attenukine_Saline_Isotype.merged.RDS')
+CD3subset <- readRDS('Objects\\Attenukine_Saline_Isotype.CD3_Subset.RDS')
+CD3subset.sig <- readRDS("Objects\\CD3subset.sig.RDS")
+Myeloid.subset <- readRDS("Objects\\Attenukine_Saline_Isotype.Myeloid.subset.Merged.RDS")
+Myeloid.subset.sig <- readRDS("Objects//Myeloid.subset.sig.RDS")
+
+# NK.subset <- readRDS("Objects\\OX40.NK.subset.Merged.RDS")
+
+merged$Sample <- factor(merged$Sample, levels = c("Saline","Isotype","αPD1(RMP1-30)-IL2"))
+CD3subset$Sample <- factor(CD3subset$Sample, levels = c("Saline","Isotype","αPD1(RMP1-30)-IL2"))
+
+
+source("//asafmadilabfs/asafmadilab$/michael/Madi lab/from tomer/Teva.Utils.R")
+# colors <- c('#55a0fb','#05d386','#ff8d1c')
+colors <- c('#BACDB0', '#BA8F95', '#256D95')
+colors_2 <- colors[c(1,3)]
+# colors <- c('#7D4E57', '#6D9F71', '#364156')
+
+path <- "C:\\Users\\Tomer\\Desktop\\Master\\Projects\\Teva.3\\Prod\\Paper\\"
+
+my_comparisons <- list(c("Saline", "Isotype"), c("Saline", "αPD1(RMP1-30)-IL2"), c("Isotype", "αPD1(RMP1-30)-IL2"))
+
+my_comparisons_two <- list(c("Saline", "αPD1(RMP1-30)-IL2"))
+
+theme_vln <- theme(axis.text.x = element_text(angle = 330, hjust = 0))
+
+pal_6 <- wes_palette("Zissou1", n = 6, type = "continuous")
+
+```
+
+#########################################################
+###Figure1
+#########################################################
+
+
+# Fig1
+```{r}
+# Fig1a
+# cols = brewer.pal(n = 4, name = "Set2"))
+pal_4 <- wes_palette("Rushmore1", n = 4, type = "continuous")
+DimPlot(merged, reduction = "tsne", group.by = 'Lineage', pt.size = 1, order = T, cols = pal_4) +
+        ggtitle(NULL) +
+        theme(text = element_text(size = 20), 
+              axis.text = element_text(size = 16),
+              legend.text = element_text(size = 20))
+ggsave('Prod\\Paper\\Fig1a.png', dpi=200, width = 8, height = 6)
+
+# Fig1b
+merged <- SetIdent(object = merged, value = 'Lineage') 
+bar_plot('Prod\\Paper\\Fig1b.png', object = merged, choice = 0, dodged = T)
+
+# Fig1c
+FeaturePlot(merged, features = c('Cd3d','Il2ra', 'Il2rb','Pdcd1'), order = T, ncol = 2)
+ggsave('Prod\\Paper\\Fig1c.png', dpi=300, width = 7, height = 6)
+
+# Fig1d
+# cols = brewer.pal(n = 6, name = "Set2"))
+pal_6 <- wes_palette("Zissou1", n = 6, type = "continuous")
+pal_6 <- pal_6[c(1:4,6,5)]
+p <- DimPlot(CD3subset, reduction = "tsne", pt.size = 1, order = T, label = F, group.by = "Annotation", 
+             cols = pal_6) + 
+          ggtitle(NULL) + theme(legend.position = "none") +
+          theme(text = element_text(size = 18), 
+                       axis.text = element_text(size = 14))
+LabelClusters(p, id = "Annotation",  fontface = "bold", color = "black", size = 6, repel = T)
+ggsave('Prod\\Paper\\Fig1d.png', dpi=200, width = 7, height = 6.5)
+
+# Fig1e
+bar_plot('Prod\\Paper\\Fig1e.png', CD3subset, 1, dodged = T)
+bar_plot('Prod\\Paper\\Fig1e2.png', CD3subset, 1, dodged = T, geom = "point")
+
+
+# Fig1f
+VlnPlot(CD3subset, 'Pdcd1', pt.size = 0, group.by = 'Annotation', cols = pal_6) +
+   theme_vln + NoLegend() + xlab(NULL) +
+   geom_boxplot(outlier.shape = NA, width = .4, alpha = .3, show.legend = FALSE, coef = 0, 
+                          position = position_dodge(width = .9))
+ggsave("Prod\\Paper\\Fig1f3.png",width = 7, height = 6, dpi = 300)
+
+VlnPlot(CD3subset, 'Il2ra', pt.size = 0, group.by = 'Annotation', cols = pal_6) +
+   theme_vln + NoLegend() + xlab(NULL) +
+   geom_boxplot(outlier.shape = NA, width = .4, alpha = .3, show.legend = FALSE, coef = 0, 
+                          position = position_dodge(width = .9))
+ggsave("Prod\\Paper\\Fig1f4.png",width = 7, height = 6, dpi = 300)
+
+
+# p1 <- Vln_Plot(CD3subset, 'Il2ra', my_comparisons, facet = F, box = T)
+# p2 <- Vln_Plot(CD3subset, 'Il2rb', my_comparisons, facet = F, box = T)
+# p3 <- Vln_Plot(CD3subset, 'Pdcd1', my_comparisons, facet = F, box = T)
+# gglist <- list(p1,p2,p3)
+# ggarrange(plotlist = gglist, ncol=2, nrow  = 2,common.legend = T, legend = "bottom")
+# ggsave("Prod\\Paper\\Fig1g.png",width = 10, height = 10, dpi = 300)
+
+
+# 
+# VlnPlot(CD3subset, features = 'Il2ra', pt.size = 0, split.by = 'Sample', cols = colors) +
+#   theme_vln
+# 
+# my_comparisons <- list(c("Saline", "Isotype"), c("Saline","αPD1(RMP1-30)-IL2"), c("Isotype", "αPD1(RMP1-30)-IL2"))
+# 
+# p1 <- Vln_Plot(CD3subset, 'Il2ra', my_comparisons)
+# p2 <- Vln_Plot(CD3subset, 'Il2rb', my_comparisons)
+# p3 <- Vln_Plot(CD3subset, 'Pdcd1', my_comparisons)
+# patchwork::wrap_plots(p1,p2,p3, ncol = 1, nrow = 3, guides = "collect")
+# # p1|p2|p3
+# ggsave('Prod\\Paper\\Fig1f.png', dpi=200, width = 17, height = 10)
+
+
+# fig 1h
+signatures <- c('Tcells_Cytotoxicity', 'Tcell_chemotaxis','Tcell_Integrin_activation', 
+                'Tcells_Co_Inhibitory', 'Tcells_Co_Stimulatory', 'Tregs_suppression','INTERLEUKIN_2_RECEPTOR_BINDING',
+                'INTERLEUKIN_2_RESPONSE', 'NF_KAPPAB_SIGNALING')
+my_comparisons <- list(c("Saline", "Isotype"), c("Saline", "αPD1(RMP1-30)-IL2"), c("Isotype", "αPD1(RMP1-30)-IL2"))
+
+
+source("C:\\Users\\tomer\\Desktop\\Master\\Projects\\Teva.Utils.R")
+
+wrap_text <- function(x, chars = 30) {
+  stringr::str_wrap(x, chars)
+}
+
+
+VlnPlot(CD3subset.sig, features = 'INTERLEUKIN_2_RESPONSE', assay = 'sig', group.by = 'Sample', 
+  split.by = 'Sample', pt.size = 0, cols = colors, y.max = 1.4) +
+   theme_minimal() +
+  facet_wrap(~CD3subset.sig$Annotation, nrow = 2, strip.position = "bottom", 
+             labeller = as_labeller(wrap_text)) +
+  theme(text = element_text(size = 16), 
+        legend.text = element_text(size = 20), legend.position="bottom", 
+        plot.margin = unit(c(0.5,3,0.5,0.5), "cm"),
+        axis.text.x = element_blank(),
+        strip.text.x = element_text(size = 18), 
+        strip.placement = "outside",
+        strip.background = element_blank(),
+        plot.title = element_text(size = 24, hjust = 0.5, face = "bold")) +
+  ylab("Signature Score") + xlab(NULL) +
+  geom_boxplot(outlier.shape = NA, width = .4, alpha = .3, show.legend = FALSE, coef = 0, 
+                     position = position_dodge(width = .9)) +
+  stat_compare_means(ref.group = 'Sample', comparisons = my_comparisons, label = "p.signif", 
+                   method = "wilcox.test", size = 5, bracket.size = 0.6) +
+  ggtitle("IL2 Response Signature") +
+   scale_y_continuous(limits = c(0, 1.4), breaks = seq(0, 1, by = 0.25))
+  
+ggsave("Prod\\Paper\\Fig1h2.png", width = 12, height = 10, dpi = 250)
+
+
+CD3subset_two <- subset(CD3subset, subset = Sample %in% c("Saline","αPD1(RMP1-30)-IL2"))
+CD3subset_two$Sample <- factor(CD3subset_two$Sample, levels = c("Saline","αPD1(RMP1-30)-IL2"))
+Vln_Plot(CD3subset_two, feature = 'Tox', my_comparisons = my_comparisons_two, 
+         idents = CD3subset_two$Annotation, box = T, facet = 'down')
+ggsave("Prod\\Paper\\Fig1i1.png", height = 4, width = 9, dpi = 300)
+
+
+Vln_Plot(CD3subset_two, feature = 'Il10ra', my_comparisons = my_comparisons_two, 
+         idents = CD3subset_two$Annotation, box = T, facet = 'down')
+ggsave("Prod\\Paper\\Fig1i2.png", height = 4, width = 9, dpi = 300)
+
+
+levels(CD3subset$Annotation)
+CD3_DEGs <- read.csv("Excels\\Tcells.DEGs.csv")
+CD3_DEGs_c0 <- CD3_DEGs %>% filter(cluster ==0)
+
+
+
+p <- Volcano_plot(table = CD3_DEGs_c0, title = "0_Effector CD8+ DEGs", subtitle = "Atteunukine vs Saline", 
+                  highlight_genes = c("Lgals3", "Itgb7", "Ier3", "Nfatc2", "Zfp36l1", "Ptpn6"))
+p
+ggsave("Prod\\Paper\\Fig1i3.png", p, width = 4.5, height = 4, dpi = 300)
+
+CD3_DEGs_c0 <- CD3_DEGs %>% filter(cluster ==1)
+p <- Volcano_plot(table = CD3_DEGs_c0, title = levels(CD3subset$Annotation)[2],
+                  highlight_genes = c("Il10ra", "Tox", "S100a4", "Ctla2b", "Actg1", "Fgl2", "Dok2", 
+                                      "Birc2", 'Sla', 'Samsn1', 'Cd5', 'Cd6', 'Ctla4', 'Serpinb9', 'Stat3', 'Nr4a2'))
+p
+ggsave("Prod\\Paper\\Fig1i4.png", p, width = 4.5, height = 4, dpi = 300)
+
+
+Vln_Plot(CD3subset, feature = 'Il2ra', my_comparisons = my_comparisons_two, 
+         idents = CD3subset$Annotation, box = T, facet = 'down')
+ggsave("Prod\\Paper\\Fig1i5.png", height = 4, width = 9, dpi = 300)
+
+
+```
+
+```{r}
+CD8_Tcells <- subset(CD3subset, subset = seurat_clusters %in% c(0,1,2,3))
+
+CD8_Tcells_markers <- FindMarkers(CD8_Tcells, ident.1 = "αPD1(RMP1-30)-IL2", ident.2 = "Saline",  group.by = "Sample", 
+            logfc.threshold = -Inf, only.pos = F)
+CD8_Tcells_markers <- CD8_Tcells_markers %>% mutate('gene' = rownames(CD8_Tcells_markers)) 
+CD8_Tcells_markers <- CD8_Tcells_markers %>% arrange(cluster,-avg_log2FC)
+   
+   
+write.csv(CD8_Tcells_markers, "Excels\\CD8_Tcells_DEGs_Attenukine_vs_Saline.csv")
+CD8_Tcells_markers <- read.csv("Excels\\CD8_Tcells_DEGs_Attenukine_vs_Saline.csv")
+
+Vln_Plot(CD3subset, feature = 'Ccl5', my_comparisons = my_comparisons_two, 
+         idents = CD3subset$Annotation, box = T, facet = 'down')
+
+Volcano_plot(table = CD8_Tcells_markers, title = "CD8+ T cells DEGs", 
+             subtitle = "Atteunukine vs Saline",
+             highlight_genes = c('Ccl5','Ccl3','Ccl4','Tox','Il10ra','Lag3','Mki67','Stmn1','Top2a','Ctla4')
+             )
+ggsave("Prod\\Paper\\Fig1j.png", height = 4, width = 4.5, dpi = 300)
+
+```
+
+
+
+
+```{r}
+signatures <- c('Tcell_chemotaxis','Tcell_Integrin_activation', 'NF_KAPPAB_SIGNALING','Tcells_Cytotoxicity', 
+                'Tcells_Co_Inhibitory', 'Tcells_Co_Stimulatory')
+
+levels(CD3subset.sig$Sample)
+heatmap_CD3subset <- subset(CD3subset.sig, subset = Sample %in% c("Saline","αPD1(RMP1-30)-IL2"))
+heatmap_CD3subset$Sample <- factor(heatmap_CD3subset$Sample, levels = c("Saline","αPD1(RMP1-30)-IL2"))
+
+
+heatmap_levels <- paste(rep(levels(heatmap_CD3subset$Annotation), 
+                            each = length(levels(heatmap_CD3subset$Sample))), levels(heatmap_CD3subset$Sample), sep = "_")
+
+heatmap_CD3subset$cell.type <- paste0(heatmap_CD3subset@active.ident,"_", heatmap_CD3subset$Sample)
+heatmap_CD3subset$cell.type <- factor(heatmap_CD3subset$cell.type, levels = heatmap_levels)
+
+
+# Idents(heatmap_CD3subset) <- 'cell.type'
+# counts <- heatmap_CD3subset[[signatures]]
+# heatmap_CD3subset[['sig']] <- CreateAssayObject(data = t(x = FetchData(object = CD3subset.sig, 
+#                                                                    vars = signatures)))
+# View(CD3subset.sig@assays$sig@data)
+# DoHeatmap(object = CD3subset.sig, features = 'NF-KAPPAB-SIGNALING', assay = 'sig', slot = 'data')
+
+signatures1 <- gsub("_", "-", signatures)
+counts <- AverageExpression(heatmap_CD3subset, assays = 'sig',slot = 'data', features = signatures1)[[1]]
+
+# column annotation
+annot_col = data.frame(Sample = factor(rep(c(levels(heatmap_CD3subset$Sample)),6)))
+
+row.names(annot_col) <- colnames(counts)
+levels(annot_col$Sample) = c("αPD1(RMP1-30)-IL2","Saline")
+
+# colors
+annot_colors <- colors[c(1,3)]
+annot_colors_2 <- viridis_pal(option = "D")(6) 
+names(annot_colors) <- c(levels(heatmap_CD3subset$Sample))
+names(annot_colors_2) <- levels(heatmap_CD3subset$Annotation)
+annot_colors <- list(Sample = annot_colors)
+
+# test labels
+# test_labels <- matrix('', 8, 14) 
+test_labels <- pval_table(heatmap_CD3subset, signatures, test_labels)
+
+# gaps columns
+gaps_columns <- c(seq.int(length(levels(heatmap_CD3subset$Sample)),
+                  length(levels(heatmap_CD3subset$Sample))*length(levels(heatmap_CD3subset$seurat_clusters)),
+                  length(levels(heatmap_CD3subset$Sample))))
+
+
+a <- levels(heatmap_CD3subset$Annotation)
+b <- rep("",6)
+labels <- as.vector(rbind(a,b))
+
+labels_row <- c("Tcells chemotaxis","Tcells integrin activation",
+                "NFKB signaling","Tcells cytotoxicity",
+                "Tcells co-inhibition","Tcells co-stimulation")
+
+png('Prod\\Paper\\Fig2a.png',res =  300, width = 24, height = 13, units = "cm")
+pheatmap(counts, scale = 'row', 
+            color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(50),
+            cluster_rows = F, cluster_cols = F, 
+            annotation_col = annot_col,
+            annotation_colors = annot_colors,
+            gaps_col = gaps_columns, show_colnames = T,
+            angle_col = 315, labels_col = labels,
+            display_numbers = test_labels, 
+            labels_row = labels_row,
+            fontsize_number = 20
+            )
+dev.off()
+
+
+```
+
+
+
+
+```{r}
+
+# 3 scales on dot plot
+
+# library(ggnewscale)
+# DotPlot(CD3subset, features = c('Il2ra','Il2rb','Pdcd1'), group.by = 'Annotation', split.by = 'Sample',
+#         cols = "RdBu", dot.scale = 15) +
+#   coord_flip() +
+#   theme_vln +
+#   new_scale("size") +
+#   scale_colour_gradient(low = "dodgerblue", high = "purple")  
+# 
+# 
+# 
+# df <- p$data
+# df$Sample <- c(rep(c(rep("Saline",3), rep("αPD1(RMP1-30)-IL2",3), rep("Isotype", 3)), 6))
+# 
+# 
+# df1 <- df[df$Sample=="Isotype",]
+# df2 <- df[df$Sample=="Saline",]
+# 
+# 
+# x_annotation <- c('',"0_Effector CD8+",'','', "1_Activated CD8+",'','', "2_Proliferating CD8+",'','', 
+#                   "3_Early proliferating CD8+",'','',"4_Naive/Memory CD8+",'','', "5_Tregs",'')
+# 
+# ggplot(df, aes(x = id, y = features.plot)) +
+#   geom_point(aes(size = pct.exp, fill = avg.exp.scaled), color="black", shape=21) +
+#   scale_size("% Expressed", range = c(0,11))  +
+#   scale_fill_gradient(low = "grey", high = "#BACDB0", guide = guide_colourbar(direction = "horizontal", 
+#                                                                               title.position = "top", label = F)) +
+#   labs(fill  = "Attenukine") +
+# 
+# 
+#   
+#   new_scale_fill() +
+#   geom_point(data = df1, aes(size = pct.exp, fill = avg.exp.scaled), color="black", shape=21) +
+#   scale_fill_gradient(low = "grey", high = "#BA8F95", guide = guide_colourbar(direction = "horizontal", 
+#                                                                               title.position = "top", label = F, order = 2)) +
+#   labs(fill  = "Avg. Expression\nIsotype")+
+#   # theme(legend.direction = "horizontal") +
+#   
+#   new_scale_fill() +
+#   geom_point(data = df2, aes(size = pct.exp, fill = avg.exp.scaled), color="black", shape=21) +
+#   scale_fill_gradient(low = "grey", high = "#256D95", guide = guide_colourbar(direction = "horizontal", 
+#                                                                               title.position = "top", label = F, order = 3)) +
+#   geom_vline(xintercept = c(seq(3.5,17,3)), linetype='dashed') +
+#   scale_x_discrete(labels=x_annotation) +
+#     # scale_x_discrete(breaks = c(1,4,7,11,15, 16), labels=levels(CD3subset$Annotation)) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(size =12, angle = 330, hjust = 0)) +
+#   theme(axis.text.y = element_text(size = 10, face = "bold")) +
+#   labs(fill  = "Saline") +
+#   guides(size = guide_legend(order = 1)) +
+#   xlab("Cluster") + ylab("Genes") 
+# 
+#   
+# ggsave('Prod\\Paper\\Fig1f2.png', dpi=200, width = 9, height = 6)
+```
+
+
+
+#########################################################
+###Figure S1
+#########################################################
+
+
+```{r}
+# cols_supp = c('grey','#db8f8f','#a60000')
+cols_supp = c('grey','#db7272','#a60000')
+# cols_supp = c('grey','#a60000')
+
+theme_anotation <- theme(text = element_text(size = 10),
+         plot.title = element_text(size = 11),
+         plot.subtitle = element_text(size = 8, hjust = 0.5),
+         axis.text = element_text(size = 8),
+         axis.title = element_text(size = 9),
+         legend.text = element_text(size = 10))
+
+
+m.CD4 <- list(c('Cd4','Ctla4','Foxp3','Il2ra','Icos'))
+merged <- AddModuleScore(merged, features = m.CD4, name = "m.CD4")
+p1 <- FeaturePlot(merged, features = 'm.CD41', order = T, cols = cols_supp) +
+   ggtitle("CD4+ T cells", subtitle = paste0('(',paste0(m.CD4[[1]], collapse=","),')')) +
+   theme_anotation
+
+m.CD8 <- list(c('Cd3g','Cd3d','Cd8a','Cd8b1','Gzmb','Sell','Lag3','Ifng','Tnfrsf4'))
+merged <- AddModuleScore(merged, features = m.CD8, name = "m.CD8")
+p2 <- FeaturePlot(merged, features = 'm.CD81', order = T, cols = cols_supp) +
+   ggtitle("CD8+ T cells", subtitle = paste0('(',paste0(m.CD8[[1]], collapse=","),')')) +
+   theme_anotation
+
+m.Myeloid <- list(c('Lyz2','Cd68','Cd14','C1qb','Chil3','Cxcl10','Cd74','S100a8','S100a9','H2-Ab1'))
+merged <- AddModuleScore(merged, features = m.Myeloid, name = "m.Myeloid")
+p3 <- FeaturePlot(merged, features = 'm.Myeloid1', order = T, cols = cols_supp) +
+   ggtitle("Myeloid cells", subtitle = paste0('(',paste0(m.Myeloid[[1]], collapse=","),')')) +
+   theme_anotation
+
+m.NKs <- list(c('Gzma','Gzmc','Klra4','Klra7','Ncr1','Klre1'))
+merged <- AddModuleScore(merged, features = m.NKs, name = "m.NKs")
+p5 <- FeaturePlot(merged, features = 'm.NKs1', order = T, cols = cols_supp) +
+   ggtitle("NK cells", subtitle = paste0('(',paste0(m.NKs[[1]], collapse=","),')')) +
+   theme_anotation
+
+m.Bcells <- list(c('Cd79a','Ms4a1','Iglc1','Ighm'))
+merged <- AddModuleScore(merged, features = m.Bcells, name = "m.Bcells")
+p6 <- FeaturePlot(merged, features = 'm.Bcells1', order = T, cols = cols_supp) +
+   ggtitle("B cells", subtitle = paste0('(',paste0(m.Bcells[[1]], collapse=","),')')) +
+   theme_anotation
+
+ggpubr::ggarrange(p1,p2,p3,p5,p6, ncol = 3, nrow = 2, align = "h")
+ggsave('Prod\\Paper\\Fig.S1.png',dpi=300, width = 10, height = 5)
+
+DimPlot(merged, reduction = "tsne", pt.size = 1, order = T, group.by = 'Annotation') + 
+          ggtitle(NULL)
+ggsave('Prod\\Paper\\Fig.S1b.png', dpi=200, width = 8, height = 6)
+
+
+```
+
+#########################################################
+###Figure 2
+#########################################################
+
+
+```{r}
+# Myeloid plots
+
+# Fig 2b
+pal_8 <- wes_palette("Zissou1", n = 7, type = "continuous")
+p <- DimPlot(Myeloid.subset, reduction = "tsne", group.by = 'Annotation', repel = T, 
+             pt.size = 1, order = T, cols = pal_8) +
+        ggtitle(NULL) + theme(legend.position = "none") +
+        theme(text = element_text(size = 16), 
+                       axis.text = element_text(size = 14))
+LabelClusters(p, id = "Annotation",  fontface = "bold", color = "black", size = 6, repel = T)
+ggsave('Prod\\Paper\\Fig2b.png', dpi=200, width = 7, height = 6)
+
+
+# Fig 2f
+Myeloid.subset <- SetIdent(object = Myeloid.subset, value = 'Annotation') 
+bar_plot(file_name = 'Prod\\Paper\\Fig2c.png', object = Myeloid.subset, choice = 1, dodged = T)
+
+
+# Fig 2d
+VlnPlot(Myeloid.subset, pt.size = 0, features = 'Isg15', split.by = 'Sample', idents = c(2))
+
+library(ggrepel)
+
+DEGs_Myeloid <- read.csv('Excels\\Myeloid.DEGs.csv', header = T, row.names = 1) 
+DE_Malat_MPs <- DEGs_Myeloid %>% filter(cluster == 2)
+# top20pThr <- DE_Malat_MPs$p_val_adj[order(DE_Malat_MPs$p_val_adj)[20]]
+pajd_thr <- 0.05
+DE_Malat_MPs <- DE_Malat_MPs %>%
+  mutate(geneLabel = ifelse(p_val_adj <= pajd_thr, gene, NA))
+
+LFC_cutoff <- 0.25
+DE_Malat_MPs <- DE_Malat_MPs %>%
+  mutate(diffexpressed = 
+            ifelse(p_val_adj <= 0.05 & avg_log2FC >= LFC_cutoff, "UP", 
+                   ifelse(p_val_adj <= 0.05 & avg_log2FC <= -LFC_cutoff, "DOWN", "NO")))
+
+
+ggplot(data=DE_Malat_MPs, aes(x = avg_log2FC, y=-log10(p_val_adj), 
+                              col = diffexpressed, label =  geneLabel)) + 
+   geom_point() +
+   scale_color_manual(values=c("#1d5cf0", "black", "#c70202"), na.translate = F) +
+   geom_vline(xintercept = LFC_cutoff, linetype = "dashed") +
+   geom_vline(xintercept = -LFC_cutoff, linetype = "dashed") +
+   geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+   xlab("Avg_log2FC") + 
+   ylab("-Log10(padj)") +
+   ggtitle("2_Malat1+ MPs DEGs           Atteunukine vs Saline") +
+   theme_classic() +
+   theme(axis.line = element_line(),
+        legend.position="none", 
+        plot.title = element_text(hjust = 0.5),
+        axis.title = element_text(size = 10)) +
+   geom_text_repel(aes(label = geneLabel), max.overlaps = Inf, box.padding = 0.2, 
+                  arrow = arrow(length = unit(0.015, "npc")),  show.legend=F) 
+ggsave('Prod\\Paper\\Fig2f.png', dpi=200, width = 4.5, height = 4)
+
+
+Volcano_plot(table = DE_Malat_MPs, title = Myeloid.subset$Annotation[2], subtitle = "Atteunukine vs Saline")
+ggsave('Prod\\Paper\\Fig2f1.png', dpi=200, width = 4.5, height = 4)
+
+
+
+DE_0 <- DEGs_Myeloid %>% filter(cluster == 0)
+Volcano_plot(table = DE_0, title = levels(Myeloid.subset$Annotation)[1], subtitle = "Atteunukine vs Saline",
+             highlight_genes = c('H2-Aa','H2-Ab1','H2-Eb1','Cd74','Cd36','Isg15','Cxcl3'))
+ggsave('Prod\\Paper\\Fig2f2.png', dpi=200, width = 4.5, height = 4)
+
+
+
+DE_1 <- DEGs_Myeloid %>% filter(cluster == 1)
+Volcano_plot(table = DEGs_Myeloid %>% filter(cluster == 1), title = levels(Myeloid.subset$Annotation)[2])
+
+DE_2 <- DEGs_Myeloid %>% filter(cluster == 2)
+Volcano_plot(table = DEGs_Myeloid %>% filter(cluster == 2), title = levels(Myeloid.subset$Annotation)[3])
+
+DE_3 <- DEGs_Myeloid %>% filter(cluster == 3)
+Volcano_plot(table = DEGs_Myeloid %>% filter(cluster == 3), title = levels(Myeloid.subset$Annotation)[4], pajd_thr = 1e-10)
+
+DE_4 <- DEGs_Myeloid %>% filter(cluster == 4)
+Volcano_plot(table = DEGs_Myeloid %>% filter(cluster == 4), title = levels(Myeloid.subset$Annotation)[5])
+
+DE_5 <- DEGs_Myeloid %>% filter(cluster == 5)
+Volcano_plot(table = DEGs_Myeloid %>% filter(cluster == 5), title = levels(Myeloid.subset$Annotation)[6])
+
+
+
+levels(Myeloid.subset$Annotation)
+
+
+Vln_Plot(Myeloid.subset, feature = 'Cd274', my_comparisons = my_comparisons_two, 
+         idents = Myeloid.subset$Annotation, box = T, facet = 'down') +
+   ggtitle("Cd274 (PD-L1)")
+ggsave("Prod\\Paper\\Fig2g.png", height = 4, width = 9, dpi = 300)
+
+
+Vln_Plot(Myeloid.subset, feature = 'Cd80', my_comparisons = my_comparisons_two, 
+         idents = Myeloid.subset$Annotation, box = T, facet = 'down')
+
+Vln_Plot(Myeloid.subset, feature = 'Cd86', my_comparisons = my_comparisons_two, 
+         idents = Myeloid.subset$Annotation, box = T, facet = 'down')
+
+
+
+```
+
+
+
+#########################################################
+###Figure S2
+#########################################################
+
+
+```{r}
+cols_supp = c('grey','#db7272','#a60000')
+theme_anotation1 <- theme(plot.title = element_text(size = 12),
+         plot.subtitle = element_text(size = 10, hjust = 0.5))
+
+m.effector <- list(c('Cd8b1','Ccl5','Nkg7','Ifng','Lag3','Junb'))
+CD3subset <- AddModuleScore(CD3subset, features = m.effector, name = "m.effector")
+p1 <- FeaturePlot(CD3subset, features = 'm.effector1', order = F, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Effector CD8+ T cells", 
+           subtitle = paste0('(',paste0(m.effector[[1]], collapse=","),')')) +
+   theme_anotation
+
+
+m.activated <- list(c('Cd3d','Cd8a','Prf1','Gzmb','Gzmc','Gzme','Gzme','Gzmf'))
+CD3subset <- AddModuleScore(CD3subset, features = m.activated, name = "m.activated")
+p2 <- FeaturePlot(CD3subset, features = 'm.activated1', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Activated CD8+ T cells", subtitle = paste0('(',paste0(m.activated[[1]], collapse=","),')')) +
+   theme_anotation
+
+
+m.proliferating <- list(c('Cd3d','Cd8a','Top2a','Mki67','Stmn1'))
+CD3subset <- AddModuleScore(CD3subset, features = m.proliferating, name = "m.proliferating")
+p3 <- FeaturePlot(CD3subset, features = 'm.proliferating1', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Proliferating CD8+ T cells", subtitle = paste0('(',paste0(m.proliferating[[1]], collapse=","),')')) +
+   theme_anotation
+
+m.earlyProli <- list(c('Cd3d','Mcm3','Dut','Ifitm2'))
+CD3subset <- AddModuleScore(CD3subset, features = m.earlyProli, name = "m.earlyProli")
+p4 <- FeaturePlot(CD3subset, features = 'm.earlyProli1', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Early proliferating CD8+ T cells", subtitle = paste0('(',paste0(m.earlyProli[[1]], collapse=","),')')) +
+   theme_anotation
+
+
+m.Naive.Memory <- list(c('Cd7','Tcf7','Sell','Cxcr4','Klra1','Cd69','Ccr7'))
+CD3subset <- AddModuleScore(CD3subset, features = m.Naive.Memory, name = "m.Naive.Memory")
+p5 <- FeaturePlot(CD3subset, features = 'm.Naive.Memory1', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Naive/Memory CD8+ T cells", subtitle = paste0('(',paste0(m.Naive.Memory[[1]], collapse=","),')')) +
+   theme_anotation
+
+m.Tregs <- list(c('Cd4','Foxp3','Il2ra','Icos','Ctla4'))
+CD3subset <- AddModuleScore(CD3subset, features = m.Tregs, name = "m.Tregs")
+p6 <- FeaturePlot(CD3subset, features = 'm.Tregs1', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("CD4+ T regs", subtitle = paste0('(',paste0(m.Tregs[[1]], collapse=","),')')) +
+   theme_anotation
+
+
+ggpubr::ggarrange(p1,p2,p3,p4,p5,p6, ncol = 3, nrow = 2, align = "h")
+ggsave(paste0(path,'Fig.S2a.png'),dpi=300, width = 10, height = 5)
+
+```
+
+
+#########################################################
+###Figure3
+#########################################################
+
+```{r}
+path_Attenukine_Saline <- "C:\\Users\\Tomer\\Desktop\\Master\\Projects\\Teva.Attenukine.vs.Saline\\"
+cellchat <- readRDS(paste0(path_Attenukine_Saline,'Objects\\cellchat.basic.RDS'))
+
+object.list <- readRDS(paste0(path_Attenukine_Saline,'Objects\\cellchat_comparison.RDS'))
+cellchat.m <- mergeCellChat(object.list, add.names = names(object.list))
+
+# Fig 3a
+library(reshape2)
+library(ggpubr)
+Attenukine_ints <- cellchat.m@net$treatment$count %>% as.data.frame()
+sum(sum(Attenukine_ints))
+final.attenukine <- melt(Attenukine_ints, variable.name = "to")
+final.attenukine <- final.attenukine %>% mutate("dataset" = "αPD1(RMP1-30)-IL2")
+final.attenukine$to <- paste0(final.attenukine$to, "_", rownames(Attenukine_ints))
+
+
+saline_ints <- cellchat.m@net$control$count %>% as.data.frame()
+sum(sum(saline_ints))
+final.saline <- melt(saline_ints, variable.name = "to")
+final.saline <- final.saline %>% mutate("dataset" = "Saline")
+final.saline$to <- paste0(final.saline$to, "_", rownames(saline_ints))
+
+levels(merged$Sample)
+
+final <- merge(x=final.attenukine,y=final.saline,  all=T)
+final$dataset <- factor(final$dataset, levels = c('Saline','αPD1(RMP1-30)-IL2'))
+
+ggplot(final, aes(dataset,value)) +
+  geom_boxplot(aes(fill = dataset, color = dataset), alpha = 0, show.legend = F) +
+  geom_point(aes(color = dataset), show.legend = T) +
+  geom_line(aes(group = to), show.legend = F, color = "grey80", size = 0.2) +
+  stat_compare_means(method = "t.test", label = "p.signif", paired = T, label.x.npc = "center", size = 5) +
+  scale_color_manual(name = "",values= colors[c(1,3)]) +
+  scale_fill_manual(name = "",values= colors[c(1,3)]) +
+  ylab("Number of inferred interactions") + xlab(NULL) +
+  theme_classic2() +
+  theme(legend.position = "top") 
+
+ggsave('Prod\\paper\\Fig3a.png', width = 3.5, height = 4, dpi = 250)
+
+# fig 3b
+g <- rankNet(cellchat.m, mode = "comparison", stacked = F, do.stat = TRUE)
+df <- g$data
+df <- df %>% filter(contribution.scaled>3)
+bold.pathways <- c("TNF")
+df$name <- factor(df$name)
+bold.labels <- ifelse(levels(df$name) %in% bold.pathways, yes = "bold", no = "plain")
+size.labels <- ifelse(levels(df$name) %in% bold.pathways, yes = 10, no = 9)
+
+
+df$group <- recode(df$group, "control" = "Saline")
+df$group <- recode(df$group, "treatment" = "αPD1(RMP1-30)-IL2")
+df$group <- factor(df$group, levels = c("Saline", "αPD1(RMP1-30)-IL2"))
+
+ggplot(df, aes(x=contribution.scaled, y=name, fill = group))+
+   theme_classic() +
+   geom_bar(stat="identity", position="dodge") +
+   scale_fill_manual(values=colors[c(1,3)], name = "Group") +
+   labs(y = "Signaling Network", x = "Information flow", 
+   title = "Signaling Pathways Information Flow - All cells") +
+   theme(plot.title = element_text(size = 12)) +
+   theme(axis.text.y = element_text(face = bold.labels, size = size.labels)) 
+ggsave('Prod\\paper\\Fig3b.png', width = 5, height = 6, dpi = 250)
+
+
+# Fig 3c
+T_cell_clusters <- c(4,5,8,9,13)
+g <- rankNet(cellchat.m, mode = "comparison", stacked = F, do.stat = TRUE, 
+             targets.use = T_cell_clusters) +
+  scale_fill_discrete(labels = c("αPD1(RMP1-30)-IL2", "Saline"))
+
+df <- g$data
+df <- df %>% filter(contribution.scaled>3)
+bold.pathways <- c("CCL", "CXCL","ICAM")
+df$name <- factor(df$name)
+bold.labels <- ifelse(levels(df$name) %in% bold.pathways, yes = "bold", no = "plain")
+size.labels <- ifelse(levels(df$name) %in% bold.pathways, yes = 10, no = 9)
+
+df$group <- recode(df$group, "control" = "Saline")
+df$group <- recode(df$group, "treatment" = "αPD1(RMP1-30)-IL2")
+df$group <- factor(df$group, levels = c("Saline", "αPD1(RMP1-30)-IL2"))
+
+ggplot(df, aes(x=contribution.scaled, y=name, fill = group))+
+   theme_classic() +
+   geom_bar(stat="identity", position="dodge") +
+   scale_fill_manual(values=colors[c(1,3)], name = "Group") +
+   labs(y = "Signaling Network", x = "Information flow", 
+   title = "Signaling Pathways Information Flow - T cells") +
+   theme(plot.title = element_text(size = 12)) +
+   theme(axis.text.y = element_text(face = bold.labels, size = size.labels)) 
+ggsave('Prod\\paper\\Fig3c.png', width = 5, height = 6, dpi = 250)
+
+# fig 3d
+source("C:\\Users\\tomer\\Desktop\\Master\\Projects\\Teva.Utils.R")
+theme_1 <- theme(text = element_text(size = 10), title = element_text(size = 12, face = "bold"),
+                 axis.title.y = element_text(colour = "black", face = "plain"),
+                 axis.text.y = element_text(size = 11),
+                 axis.title.x = element_text(face = "plain"))
+interactions <- read.csv(paste0(path_Attenukine_Saline, "Excels//Interactions.csv"), row.names = 1)
+
+p1 <- interaction_barplot(interactions, 'Cxcr6', 'Cxcl16', colors_2) + theme_1
+p2 <- interaction_barplot(interactions, 'ITGAL_ITGB2', 'Icam1', colors_2) + theme_1
+p3 <- interaction_barplot(interactions, 'ITGAM_ITGB2', 'Icam1', colors_2) + theme_1
+p4 <- interaction_barplot(interactions, 'Itgal', 'Icam1', colors_2) + theme_1
+p5 <- interaction_barplot(interactions, 'Tnfrsf1a', 'Tnf', colors_2) + theme_1
+p6 <- interaction_barplot(interactions, 'Pdcd1', 'Cd274', colors_2) + theme_1
+
+gglist <- list(p1,p2,p3,p4,p5,p6)
+ggarrange(plotlist = gglist, ncol=3, nrow  = 2,common.legend = T, legend="none", align = "hv", )
+ggsave("Prod\\Paper\\Fig3d.png",width = 12, height = 8, dpi = 300)
+
+
+# fig 3e
+png('Prod\\Paper\\Fig3e.png',width = 2300, height = 2300, res = 250)
+netVisual_chord_gene(cellchat,targets.use = T_cell_clusters, 
+                     signaling = 'CXCL', 
+                     lab.cex = 1.3,legend.pos.y = 20, legend.pos.x = 0)
+dev.off()
+
+
+```
+
+```{r}
+# Myeloid Heatmap
+suppressiveMyeloid <- c('Arg1', 'Cd80', 'Icosl','Adora2a','Adora2b','Lgals9','Pdcd1lg2')
+CostimulatoryMyeloid <- c('Tnf', 'Alcam', 'Il1b','Pvr','Tnfsf9','Tnfsf4','Cd86')
+Costimulatorysuppressive <- c(CostimulatoryMyeloid,suppressiveMyeloid)
+
+
+heatmap_Myeloid <- subset(Myeloid.subset, subset = Sample %in% c("Saline","αPD1(RMP1-30)-IL2"))
+heatmap_Myeloid$Sample <- factor(heatmap_Myeloid$Sample, levels = c("Saline","αPD1(RMP1-30)-IL2"))
+
+
+heatmap_levels <- paste(rep(levels(heatmap_Myeloid$Annotation), 
+                            each = length(levels(heatmap_Myeloid$Sample))), levels(heatmap_Myeloid$Sample), sep = "_")
+
+
+heatmap_Myeloid$cell.type <- paste0(heatmap_Myeloid@active.ident,"_", heatmap_Myeloid$Sample)
+heatmap_Myeloid$cell.type <- factor(heatmap_Myeloid$cell.type, levels = heatmap_levels)
+
+
+Idents(heatmap_Myeloid) <- 'cell.type'
+# counts <- heatmap_CD3subset[[signatures]]
+# heatmap_CD3subset[['sig']] <- CreateAssayObject(data = t(x = FetchData(object = CD3subset.sig, 
+#                                                                    vars = signatures)))
+# View(CD3subset.sig@assays$sig@data)
+# DoHeatmap(object = CD3subset.sig, features = 'NF-KAPPAB-SIGNALING', assay = 'sig', slot = 'data')
+
+# signatures1 <- gsub("_", "-", signatures)
+counts <- AverageExpression(heatmap_Myeloid, assays = 'RNA',slot = 'data', features = Costimulatorysuppressive)$RNA
+
+# column annotation
+annot_col = data.frame(Cluster = factor(rep(levels(heatmap_Myeloid$Annotation), c(rep(2,7)))),
+                       Sample = factor(rep(c(levels(heatmap_Myeloid$Sample)),7)))
+
+row.names(annot_col) <- colnames(counts)
+levels(annot_col$Sample) = c("αPD1(RMP1-30)-IL2","Saline")
+
+# colors
+annot_colors <- colors[c(1,3)]
+annot_colors_2 <- viridis_pal(option = "D")(7) 
+names(annot_colors) <- c(levels(heatmap_Myeloid$Sample))
+names(annot_colors_2) <- levels(heatmap_Myeloid$Annotation)
+annot_colors <- list(Sample = annot_colors, Cluster = annot_colors_2)
+
+# test labels
+# test_labels <- matrix('', 8, 14) 
+test_labels <- pval_table(heatmap_Myeloid, signatures, test_labels)
+
+# gaps columns
+gaps_columns <- c(seq.int(length(levels(heatmap_Myeloid$Sample)),
+                  length(levels(heatmap_Myeloid$Sample))*length(levels(heatmap_Myeloid$seurat_clusters)),
+                  length(levels(heatmap_Myeloid$Sample))))
+
+
+
+png('Prod\\Paper\\Fig2d.png',res =  500, width = 20, height = 8, units = "cm")
+pheatmap(counts, scale = 'row', 
+            color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(50),
+            cluster_rows = F, cluster_cols = F, 
+            gaps_row = c(7), 
+            annotation_col = annot_col,
+            annotation_colors = annot_colors,
+            gaps_col = gaps_columns, show_colnames = F,
+            angle_col = 90,
+            # display_numbers = test_labels,
+            fontsize_number = 25
+            )
+dev.off()
+
+
+
+VlnPlot(Myeloid.subset, features = 'Tnf', pt.size = 0, split.by = 'Sample', cols = colors, 
+        group.by = 'Annotation') +
+  theme(axis.text.x = element_text(angle = 330, hjust = 0))
+Vln_Plot(Myeloid.subset, 'Tnf', idents = Myeloid.subset$Annotation, facet = 'down', my_comparisons = my_comparisons_two)
+ggsave("Prod\\Paper\\Fig2e.png", height = 4, width = 7, dpi = 250)
+
+```
+
+
+```{r}
+# Myeloid heatmap signatures
+signatures <- c('NF_KAPPAB_SIGNALING', 'IFNg_response', 'ANTIGEN_PROCESSING_AND_PRESENTATION',
+                'Myeloid_Co_Stimulatory',
+                'Myeloid_Co_Inhibitory')
+
+
+heatmap_Myeloid <- subset(Myeloid.subset.sig, subset = Sample %in% c("Saline","αPD1(RMP1-30)-IL2"))
+heatmap_Myeloid$Sample <- factor(heatmap_Myeloid$Sample, levels = c("Saline","αPD1(RMP1-30)-IL2"))
+
+heatmap_levels <- paste(rep(levels(heatmap_Myeloid$Annotation), 
+                            each = length(levels(heatmap_Myeloid$Sample))), levels(heatmap_Myeloid$Sample), 
+                        sep = "_")
+
+heatmap_Myeloid$cell.type <- paste0(heatmap_Myeloid$Annotation,"_", heatmap_Myeloid$Sample)
+heatmap_Myeloid$cell.type <- factor(heatmap_Myeloid$cell.type, levels = heatmap_levels)
+
+
+Idents(heatmap_Myeloid) <- 'cell.type'
+
+signatures1 <- gsub("_", "-", signatures)
+counts <- AverageExpression(heatmap_Myeloid, assays = 'sig',slot = 'data', features = signatures1)[[1]]
+rownames(counts) <- c('NFKB Signaling','IFNg_response','Antigen P&P','Co-Stimulation','Co-Inhibition')
+
+
+# column annotation
+annot_col = data.frame(Sample = factor(rep(c(levels(heatmap_Myeloid$Sample)),7)))
+
+row.names(annot_col) <- colnames(counts)
+levels(annot_col$Sample) = c("αPD1(RMP1-30)-IL2","Saline")
+
+# colors
+annot_colors <- colors[c(1,3)]
+annot_colors_2 <- viridis_pal(option = "D")(7) 
+names(annot_colors) <- c(levels(heatmap_Myeloid$Sample))
+names(annot_colors_2) <- levels(heatmap_Myeloid$Annotation)
+annot_colors <- list(Sample = annot_colors)
+
+# rownames(annotation_col) = paste("Test", 1:10, sep = "")
+
+
+# test labels
+# test_labels <- matrix('', 8, 14) 
+test_labels <- pval_table(heatmap_Myeloid, signatures, test_labels)
+
+# gaps columns
+gaps_columns <- c(seq.int(length(levels(heatmap_Myeloid$Sample)),
+                  length(levels(heatmap_Myeloid$Sample))*length(levels(heatmap_Myeloid$seurat_clusters)),
+                  length(levels(heatmap_Myeloid$Sample))))
+
+a <- levels(Myeloid.subset.sig$Annotation)
+b <- rep("",7)
+labels <- as.vector(rbind(a,b))
+
+png('Prod\\Paper\\Fig2d2.png',res =  300, width = 22, height = 12, units = "cm")
+pheatmap(counts, scale = 'row', 
+            color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(50),
+            cluster_rows = F, cluster_cols = F, 
+            annotation_col = annot_col,
+            annotation_colors = annot_colors,
+            gaps_col = gaps_columns, 
+            angle_col = 315,
+            display_numbers = test_labels,
+            fontsize_number = 15,
+            labels_col = labels
+            )
+dev.off()
+
+
+```
+
+
+
+
+
+
+#########################################################
+###Figure S3
+#########################################################
+
+```{r}
+
+Vln_Plot(CD3subset, 'Cxcr6', my_comparisons = my_comparisons_two, facet = 'down')
+ggsave("Prod\\Paper\\Fig.S3b.png", height = 4, width = 7, dpi = 250)
+
+
+
+Vln_Plot(CD3subset, 'Itgal', my_comparisons = my_comparisons_two, facet = 'down')
+ggsave("Prod\\Paper\\Fig.S3c.png", height = 4, width = 7, dpi = 250)
+
+
+
+Vln_Plot(CD3subset, 'Pdcd1', my_comparisons = my_comparisons_two, facet = 'down')
+ggsave("Prod\\Paper\\Fig.S3d.png", height = 4, width = 7, dpi = 250)
+
+
+Vln_Plot(CD3subset, 'Icam1', my_comparisons = my_comparisons_two, facet = 'down')
+ggsave("Prod\\Paper\\Fig.S3e.png", height = 4, width = 7, dpi = 250)
+
+
+Vln_Plot(Myeloid.subset, 'Cxcl16', my_comparisons = my_comparisons_two, facet = 'down', 
+         idents = Myeloid.subset$Annotation)
+ggsave("Prod\\Paper\\Fig.S3f.png", height = 4, width = 7, dpi = 250)
+
+
+```
+
+
+```{r}
+# Myeloid Annotation per cell activity
+levels(Myeloid.subset$Annotation)
+
+
+m.C1q_MPs <- list(c('C1qa','C1qb','C1qc','Arg1'))
+Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.C1q_MPs, name = "m.C1q_MPs")
+p1 <- FeaturePlot(Myeloid.subset, features = 'm.C1q_MPs1', order = T, 
+                  cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Cxcl16+ Macrophages", subtitle = paste0('(',paste0(m.C1q_MPs[[1]], collapse=","),')')) +
+   theme(plot.title = element_text(size = 10),
+         plot.subtitle = element_text(size = 8, hjust = 0.5))
+
+m.Plac8 <- list(c('Chil3','Cxcl10','Plac8','Vcan','Ly6c2'))
+Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.Plac8, name = "m.Plac8")
+p2 <- FeaturePlot(Myeloid.subset, features = 'm.Plac81', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Cxcl10+ Monocytes", subtitle = paste0('(',paste0(m.Plac8[[1]], collapse=","),')')) +
+   theme(plot.title = element_text(size = 10),
+         plot.subtitle = element_text(size = 8, hjust = 0.5))
+
+
+m.Malat1 <- list(c('Lars2','Malat1','Gm42418'))
+Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.Malat1, name = "m.Malat1")
+p3 <- FeaturePlot(Myeloid.subset, features = 'm.Malat11', order = T, 
+                  cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Malat1+ Macrophages", subtitle = paste0('(',paste0(m.Malat1[[1]], collapse=","),')')) +
+   theme(plot.title = element_text(size = 10),
+         plot.subtitle = element_text(size = 8, hjust = 0.5))
+
+
+m.Fn1 <- list(c('Lyz2','Hp','Fn1','Itgal','Mgst1'))
+Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.Fn1, name = "m.Fn1")
+p4 <- FeaturePlot(Myeloid.subset, features = 'm.Fn11', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Fn1+ Monocytes", subtitle = paste0('(',paste0(m.Fn1[[1]], collapse=","),')')) +
+   theme(plot.title = element_text(size = 10),
+         plot.subtitle = element_text(size = 8, hjust = 0.5))
+
+
+m.neutrophils <- list(c('S100a8','S100a9','Retnlg','Ccl3'))
+Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.neutrophils, name = "m.neutrophils")
+p5 <- FeaturePlot(Myeloid.subset, features = 'm.neutrophils1', order = T, 
+                  cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("Neutrophils", subtitle = paste0('(',paste0(m.neutrophils[[1]], collapse=","),')')) +
+   theme(plot.title = element_text(size = 10),
+         plot.subtitle = element_text(size = 8, hjust = 0.5))
+
+
+m.MHCII <- list(c('H2-Eb1','H2-Aa','H2-DMb1','Ifitm1','H2-DMa'))
+Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.MHCII, name = "m.MHCII")
+p6 <- FeaturePlot(Myeloid.subset, features = 'm.MHCII1', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("MHCII DCs", subtitle = paste0('(',paste0(m.MHCII[[1]], collapse=","),')')) +
+   theme(plot.title = element_text(size = 10),
+         plot.subtitle = element_text(size = 8, hjust = 0.5))
+
+m.cDC13 <- list(c('Fscn1','Ccr7','Ccl5','Serpinb6b'))
+Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.cDC13, name = "m.cDC13")
+p7 <- FeaturePlot(Myeloid.subset, features = 'm.cDC131', order = T, cols = c('grey','#db8f8f','#a60000')) +
+   ggtitle("cDC1/3", subtitle = paste0('(',paste0(m.cDC13[[1]], collapse=","),')')) +
+   theme(plot.title = element_text(size = 10),
+         plot.subtitle = element_text(size = 8, hjust = 0.5))
+
+
+ggpubr::ggarrange(p1,p2,p3,p4,p5,p6,p7, ncol = 4, nrow = 2)
+ggsave('Prod\\Paper\\Fig.S3a.png',dpi=300, width = 14, height = 5.5)
+
+
+```
+
+```{r}
+VlnPlot(Myeloid.subset.sig, features = 'IFNg_response', assay = 'sig', group.by = 'Sample', 
+  split.by = 'Sample', pt.size = 0, cols = colors, y.max = 1.35) +
+  facet_wrap(~Myeloid.subset.sig$Annotation, nrow = 2, strip.position = "bottom", 
+             labeller = as_labeller(wrap_text)) +
+  theme(text = element_text(size = 16), 
+        legend.text = element_text(size = 20), legend.position="bottom", 
+        plot.margin = unit(c(0.5,3,0.5,0.5), "cm"),
+        axis.text.x = element_blank(),
+        strip.text.x = element_text(angle=330, hjust = 0.4), 
+        strip.placement = "outside",
+        strip.background = element_blank()) +
+  ylab("Signature Score") + xlab("Cluster") +
+  geom_boxplot(outlier.shape = NA, width = .4, alpha = .3, show.legend = FALSE, coef = 0, 
+                     position = position_dodge(width = .9)) +
+  stat_compare_means(ref.group = 'Sample', comparisons = my_comparisons, label = "p.signif", 
+                   method = "wilcox.test", size = 4.5, bracket.size = 0.6) +
+  ggtitle("IFNg Response Signature")
+
+
+ggsave("Prod\\Paper\\Fig3g.png", width = 12, height = 10, dpi = 250)
+
+
+Vln_Plot(object = Myeloid.subset, feature = 'Cd274', facet = 'down', my_comparisons = my_comparisons, box = T, 
+         idents = Myeloid.subset$Annotation) + ggtitle("Pdl1 (Cd274)")
+
+
+```
+
+
+
+
+
+
+
+

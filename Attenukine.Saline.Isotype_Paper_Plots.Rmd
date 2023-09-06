@@ -17,8 +17,8 @@ Loading
 =====
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
-install.packages("ggh4x")
-# library(Seurat)
+#install.packages("ggh4x")
+ library(Seurat)
 library(tidyverse)
 library(sleepwalk)
 library(gridExtra)
@@ -52,7 +52,7 @@ CD3subset$Sample <- factor(CD3subset$Sample, levels = c("Saline","Isotype","αPD
 
 source("//asafmadilabfs/asafmadilab$/michael/Madi lab/from tomer/Teva.Utils.R")
 # colors <- c('#55a0fb','#05d386','#ff8d1c')
-colors <- c('#BACDB0', '#BA8F95', '#256D95')
+colors <- c("#A4DEF9", "#5C7D9D","#CFBAE1")
 colors_2 <- colors[c(1,3)]
 # colors <- c('#7D4E57', '#6D9F71', '#364156')
 
@@ -191,7 +191,6 @@ Vln_Plot(CD3subset_two, feature = 'Tox', my_comparisons = my_comparisons_two,
 ggsave("Prod\\Paper\\Fig1i1.png", height = 4, width = 9, dpi = 300)
 
 
-Vln_Plot(CD3subset_two, feature = 'Il10ra', my_comparisons = my_comparisons_two, 
          idents = CD3subset_two$Annotation, box = T, facet = 'down')
 ggsave("Prod\\Paper\\Fig1i2.png", height = 4, width = 9, dpi = 300)
 
@@ -901,9 +900,11 @@ dev.off()
 #########################################################
 
 ```{r}
+table(CD3subset$Sample)
 
-Vln_Plot(CD3subset, 'Cxcr6', my_comparisons = my_comparisons_two, facet = 'down')
-ggsave("Prod\\Paper\\Fig.S3b.png", height = 4, width = 7, dpi = 250)
+Vln_Plot(CD3subset, 'Cxcr6', my_comparisons = my_comparisons, facet = 'down', box = T)+
+    stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Cxcr6.png", height = 6, width = 10, dpi = 250)
 
 
 
@@ -912,27 +913,82 @@ ggsave("Prod\\Paper\\Fig.S3c.png", height = 4, width = 7, dpi = 250)
 
 
 
-Vln_Plot(CD3subset, 'Pdcd1', my_comparisons = my_comparisons_two, facet = 'down')
-ggsave("Prod\\Paper\\Fig.S3d.png", height = 4, width = 7, dpi = 250)
+Vln_Plot(CD3subset, 'Pdcd1', my_comparisons = my_comparisons, facet = 'down', box = T)+
+    stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Pdcd1.png", height = 6, width = 10, dpi = 250)
+
+
+Vln_Plot(CD3subset, 'Havcr2', my_comparisons = my_comparisons, facet = 'down', box = T)+
+    stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Havcr2.png", height = 6, width = 10, dpi = 250)
 
 
 Vln_Plot(CD3subset, 'Icam1', my_comparisons = my_comparisons_two, facet = 'down')
-ggsave("Prod\\Paper\\Fig.S3e.png", height = 4, width = 7, dpi = 250)
+ggsave("Plots/.png", height = 4, width = 7, dpi = 250)
 
 
-Vln_Plot(Myeloid.subset, 'Cxcl16', my_comparisons = my_comparisons_two, facet = 'down', 
-         idents = Myeloid.subset$Annotation)
-ggsave("Prod\\Paper\\Fig.S3f.png", height = 4, width = 7, dpi = 250)
+Vln_Plot(Myeloid.subset, 'Cxcl16', my_comparisons = my_comparisons, facet = 'down', box = T, 
+         idents = Myeloid.subset$Annotation)+
+    stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Cxcl16.png", height = 6, width = 10, dpi = 250)
 
 
-```
+Vln_Plot(Myeloid.subset, 'Cd274', my_comparisons = my_comparisons, facet = 'down', box = T,
+         idents = Myeloid.subset$Annotation) +
+    stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Cd274.png", height = 6, width = 10, dpi = 250)
+
+# per treatment cxcl16
+
+VlnPlot(Myeloid.subset, 'Cxcl16', pt.size = 0, group.by = 'Sample', 
+               cols = colors)+
+  geom_boxplot(outlier.shape = NA, width = .4, alpha = .3, show.legend = FALSE, coef = 0, 
+                          position = position_dodge(width = .9))+
+  stat_compare_means(aes(group = 'Sample'), comparisons = my_comparisons, label = "p.signif", 
+                                method = "wilcox.test", size = 6, bracket.size = 0.8, hide.ns = F) +
+      theme(axis.text.x = element_blank())+
+    stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Havcr2_per_treatment.png", height = 6, width = 10, dpi = 250)
+#M# not relevant: new_comparisons <- list(c("Saline", "αKLH-Il2"), c("Saline", "αPD1-Il2"), c("αKLH-Il2", "αPD1-Il2"))
 
 
-```{r}
-# Myeloid Annotation per cell activity
-levels(Myeloid.subset$Annotation)
+# subsuet : 
+Myeloid_5_6 <- subset(Myeloid.subset, subset = Annotation %in% c("5_MHCII+ DCs","6_cDC1/cDC3"))
+table(Myeloid_5_6$Annotation)
+#
+VlnPlot(Myeloid_5_6, features = c("Pdcd1"), flip= TRUE, group.by = "Sample", fill.by ="ident",pt.size = 0)+
+  theme(axis.text.y =element_text(size=6))+ 
+  theme_classic()+theme(axis.text.x = element_text(angle = 70, hjust=1, size=12), axis.title.x = element_blank())+
+  theme(axis.title.y=element_text(size=12))+
+   scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+
+  geom_boxplot(alpha=0.3,show.legend = FALSE)+
+  geom_boxplot(outlier.shape = NA, width = .4, alpha = .3, show.legend = FALSE, coef = 0, 
+                          position = position_dodge(width = .9))+ 
+  stat_compare_means(aes(group = 'Sample'), comparisons = my_comparisons, label = "p.signif", 
+                                method = "wilcox.test", size = 6, bracket.size = 0.8, hide.ns = F)+
+  theme(axis.text.x = element_blank())+
+  stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Myeloid_5_6_pdcd1.png", height = 6, width = 10, dpi = 250)
 
 
+VlnPlot(Myeloid_5_6, features = c("Cxcl16"), group.by = "Sample",pt.size = 0)+
+  theme(axis.text.y =element_text(size=6))+ 
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 70, hjust=1, size=12), axis.title.x = element_blank())+
+  theme(axis.title.y=element_text(size=12))+
+   scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+
+  geom_boxplot(outlier.shape = NA, width = .4, alpha = .3, show.legend = FALSE, coef = 0, 
+                          position = position_dodge(width = .9))+
+  stat_compare_means(aes(group = 'Sample'), comparisons = my_comparisons, label = "p.signif", 
+                                method = "wilcox.test", size = 6, bracket.size = 0.8, hide.ns = F)+
+      theme(axis.text.x = element_blank())+
+    stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
+ggsave("Plots/Myeloid_5_6_cxcl16.png", height = 6, width = 10, dpi = 250)
+  theme(axis.text.x = element_text(angle = 70, hjust=1, size=12), axis.title.x = element_blank())+
+  theme(axis.title.y=element_text(size=12))+
+   scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+ 
+  facet_wrap2(T_cells@active.ident, nrow = 1, strip.position = "bottom", labeller = as_labeller(wrap_text), 
+                        strip = strip_vanilla(clip = "off")) +
 m.C1q_MPs <- list(c('C1qa','C1qb','C1qc','Arg1'))
 Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.C1q_MPs, name = "m.C1q_MPs")
 p1 <- FeaturePlot(Myeloid.subset, features = 'm.C1q_MPs1', order = T, 

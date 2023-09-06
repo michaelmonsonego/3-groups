@@ -1,6 +1,6 @@
 library(ggpubr)
 library(ggrepel)
-colors <- c("#CFBAE1", "#5C7D9D","#A4DEF9")
+colors <- c("#A4DEF9", "#5C7D9D","#CFBAE1")
 
 
 interaction_barplot <- function(interactions, r, l, cols = colors){
@@ -168,7 +168,7 @@ Vln_Plot <- function(object, feature, my_comparisons, idents = object@active.ide
   
   if(stat == T){
     p <- p + stat_compare_means(aes(group = 'Sample'), comparisons = my_comparisons, label = "p.signif", 
-                                method = "wilcox.test", size = 6, bracket.size = 0.8, hide.ns = F) +
+                                method = "t.test", size = 6, bracket.size = 0.8, hide.ns = F) +
       theme(axis.text.x = element_blank())
   }
   

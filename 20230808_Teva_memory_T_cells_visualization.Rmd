@@ -64,7 +64,8 @@ ggsave(file = "Plots/T/features_gdT.png", dpi=300, width=20, height=20)
 FeaturePlot(T_cells, features = c("Ccl5", "Xcl1", "Klrd1", "Klrc1", "Klrc2", "Cd2", "Lck", "Itga4"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
 ggsave(file = "Plots/T/features_gdT T1.png", dpi=300, width=20, height=20)
             
-FeaturePlot(T_cells, features = c("Cxcr6", "Ccr2", "Il18r1", "Il7r", "Cd44", "Il17f", "Ccr6", "Icos", "Il1r1"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
+FeaturePlot(T_cells, features = c("Cxcr6", "Ccr2", "Il18
+                                  r1", "Il7r", "Cd44", "Il17f", "Ccr6", "Icos", "Il1r1"), order=TRUE,pt.size=1, reduction="tsne", ncol=3, label= TRUE)
 ggsave(file = "Plots/T/features_gdT T17.png", dpi=300, width=20, height=20)
 ```
 
@@ -94,7 +95,7 @@ VlnPlot(ateno_saline, features = c('Havcr2'), flip= TRUE, split.by = "Treatment"
    scale_fill_manual(values= c("#CFBAE1","#A4DEF9"))+
 geom_boxplot(alpha=0.3,show.legend = FALSE, outlier.shape = NA)
 ggsave(file = "Plots/T/Havcr2-ateno_saline.png", dpi=300, width=8, height=4)
-
+  
 ###
 library(ggpubr)
 # sub_t1 <- subset(ateno_saline, ident = as.character(cluster_id), subset = Treatment == "Saline")
@@ -415,6 +416,8 @@ DimPlot(T_cells, reduction = "tsne", label=FALSE, pt.size=2)+
   theme(legend.text= element_text(size=24))
 ggsave(file = "Plots/T/T cells - annotated tsne.png", dpi=300, width=25, height=20)
 saveRDS(T_cells, file = "//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/T cells_object.rds")
+
+T_cells <- readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/T cells_object.rds")
 
 ```
 

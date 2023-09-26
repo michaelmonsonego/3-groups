@@ -251,8 +251,7 @@ pheatmap(counts, scale = 'row',
             gaps_col = gaps_columns,
             angle_col = 90,
             display_numbers = test_labels, 
-            fontsize_number = 25,labels_col = rep("",16),
-            border_color = "black"
+            fontsize_number = 25,labels_col = rep("",16)
             )
 dev.off()
 

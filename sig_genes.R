@@ -1,6 +1,33 @@
 
 setwd('D:/git_check/3-groups')
 
+
+oxphos <- c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid","Ccnb1","Cdk1","Chchd10","Coa6","Coq7","Coq9","Cox4i2",
+            "Cox7a1","Cyc1","Cycs","Dguok","Dld","Dnajc30","Fxn","Gadd45gip1","Iscu","Msh2","mt-Atp6","mt-Atp8",
+            "mt-Co1","mt-Co2","mt-Co3","mt-Cytb","mt-Nd1","mt-Nd2","mt-Nd3","mt-Nd4","mt-Nd4l","mt-Nd5","mt-Nd6",
+            "Mtch2","Myc","Ndufa1","Ndufa10","Ndufa11","Ndufa12","Ndufa13","Ndufa2","Ndufa3","Ndufa5","Ndufa6","Ndufa7",
+            "Ndufa8","Ndufa9", "Ndufab1", "Ndufaf1", "Ndufc1", "Ndufs1", "Ndufs2","Ndufv1", "Nipsnap2", 
+            "Nupr1", "Pde12", "Pde2a", "Pink1", "Ppif", "Sdha","Sdhaf2","Shmt2","Slc25a23","Slc25a33","Stoml2","Tefm",
+            "Tmem135","Tnf","Uqcc2","Uqcc3","Uqcr10")
+
+glycolysis <- c("Pfkm", 'Psmc4', 'Nup85', 'Ppha1', 'Cdk1', "Cenpa", "Gpi", "Nup155", "Gpc1", "Hk2","Aldoc","Pfkl","Nup85",
+                "Nup155", "Tpi1","Adpgk","Pfkfb1","Pfkfb4","Hk3", "Pfkfb2","Pfkfb3","Nup35","Ndc1","Gnpda2", "Aldoa","Pgm2l1",
+                "Pkm","Nup93","Pfkm","Nup54",'Nup37', 'Gpi1', 'Aaas',"Nup205",'Bpgm','Nup133',"Nup43","Nup88",'Nupl2','Nup160',
+                "Gnpda1","Nup188","Nup107","Pom121","Gapdh","Eno1b","Eno3","Gapdhs","Pgk1","Eno1",'Nup98',"Seh1l","Nup62","Aldoa")
+
+il2 <- c("Shc1","Stat5b","Lck","Stat5a","Jak3","Syk","Csnk2a1","Elk1","Grb2","Hras","Il2","Il2ra","Il2rb","Map2k1","Sos1","Csnk2a2",
+         "Fos","Jun","Mapk3","Il2rg","Mapk8","Raf1","Jak1")
+
+il2_receptor <- c("Bad", "Bcl2", "Cbl", "Cflar", "Crkl", "E2f1", "Fas", "Fasl",	"Fos", "Grb2", "Hras", "Ikzf3", "Il2ra", "Il2rb",
+                  "Il2rg", "Irs1", "Jak1", "Jak3", "Mapk1", "Mapk3", "Myc", "Nmi", "Pik3ca", "Pik3cg", "Pik3r1", "Ptpn6", "Raf1",
+                  "Rps6kb1", "Shc1", "Socs1", "Socs3", "Sos1", "Stat5a", "Stat5b", "Syk")
+
+
+
+
+
+
+############################################################################
 Antigen_processing <- (c("H2-D1", "H2-Q7", "H2-K1", "H2-T23","H2-Q4","Tap1","Tapbp","B2m", "Psmb8", "Psme1",
                          "Psmb9", "Calr", "Psmb10", "Ncf1", "Fcer1g"))
 

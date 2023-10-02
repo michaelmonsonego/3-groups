@@ -1,6 +1,6 @@
 ---
 title: 'Teva memory - T cells - visualization'
-author: "Sarah"
+author: "Michael"
 date:  "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document: 

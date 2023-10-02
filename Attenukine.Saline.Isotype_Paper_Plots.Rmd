@@ -891,6 +891,12 @@ dev.off()
 ```
 
 
+```{r}
+#M# anova version 3 groups statistic analysis
+
+
+
+```
 
 
 
@@ -900,6 +906,7 @@ dev.off()
 #########################################################
 
 ```{r}
+#M# t test version. anova version above
 table(CD3subset$Sample)
 
 Vln_Plot(CD3subset, 'Cxcr6', my_comparisons = my_comparisons, facet = 'down', box = T)+
@@ -984,11 +991,15 @@ VlnPlot(Myeloid_5_6, features = c("Cxcl16"), group.by = "Sample",pt.size = 0)+
       theme(axis.text.x = element_blank())+
     stat_summary(fun.y=mean,color="purple", shape=13, size=0.15)
 ggsave("Plots/Myeloid_5_6_cxcl16.png", height = 6, width = 10, dpi = 250)
+
+#M# whats this ?
   theme(axis.text.x = element_text(angle = 70, hjust=1, size=12), axis.title.x = element_blank())+
   theme(axis.title.y=element_text(size=12))+
    scale_fill_manual(values= c("#CFBAE1", "#5C7D9D","#A4DEF9"))+ 
   facet_wrap2(T_cells@active.ident, nrow = 1, strip.position = "bottom", labeller = as_labeller(wrap_text), 
                         strip = strip_vanilla(clip = "off")) +
+#M# until here    
+    
 m.C1q_MPs <- list(c('C1qa','C1qb','C1qc','Arg1'))
 Myeloid.subset <- AddModuleScore(Myeloid.subset, features = m.C1q_MPs, name = "m.C1q_MPs")
 p1 <- FeaturePlot(Myeloid.subset, features = 'm.C1q_MPs1', order = T, 

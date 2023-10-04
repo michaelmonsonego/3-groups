@@ -248,9 +248,3 @@ ggplot(merged@meta.data, aes(x=merged@active.ident, fill=Treatment)) + geom_bar(
 
 ggsave(file = "Plots/stacked bar plot.png", dpi=300, width=14, height=8)
 ```
-
-&nbsp;
-<hr />
-<p style="text-align: center;">Work by Michael Monsonego</a></p>
-<p style="text-align: center;"> <a href="https://www.asafmadilab.com/">Madi Lab</a></p>
-&nbsp;

@@ -38,6 +38,10 @@ setwd("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_t
 Tcells <- readRDS("//asafmadilabfs/asafmadilab$/michael/Madi lab/scRNA seq Pipeline/m/sara_teva/3_groups/Objects/T cells/T cells_object.rds")
 ```
 
+```{r}
+# checking stuff
+Tcells[["new one"]] <- c(1:9610)
+```
 
 ```{r}
 oxphos <- c("Abcd1","Afg1l","Ak4","Atp7a","Atpsckmt","Bid","Ccnb1","Cdk1","Chchd10","Coa6","Coq7","Coq9","Cox4i2","Cox7a1","Cyc1","Cycs","Dguok","Dld","Dnajc30","Fxn","Gadd45gip1","Iscu","Msh2","mt-Atp6","mt-Atp8","mt-Co1","mt-Co2","mt-Co3","mt-Cytb","mt-Nd1","mt-Nd2","mt-Nd3","mt-Nd4","mt-Nd4l","mt-Nd5","mt-Nd6","Mtch2","Myc","Ndufa1","Ndufa10","Ndufa11","Ndufa12","Ndufa13","Ndufa2","Ndufa3","Ndufa5","Ndufa6","Ndufa7","Ndufa8","Ndufa9", "Ndufab1", "Ndufaf1", "Ndufc1", "Ndufs1", "Ndufs2","Ndufv1", "Nipsnap2", "Nupr1", "Pde12", "Pde2a", "Pink1", "Ppif", "Sdha","Sdhaf2","Shmt2","Slc25a23","Slc25a33","Stoml2","Tefm","Tmem135","Tnf","Uqcc2","Uqcc3","Uqcr10")
